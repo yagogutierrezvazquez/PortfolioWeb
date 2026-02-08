@@ -1,11 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
 ---
 
-<BaseLayout title="Home">
-	<main class="flex h-screen items-center justify-center">
-		<h1 class="text-4xl font-bold text-green-500 font-mono">
-			SYSTEM ONLINE
-		</h1>
-	</main>
+<BaseLayout title="Yago Gutiérrez | Portfolio">
+  <main class="bg-[#0a0a0a]"> <Hero />
+    <section class="h-screen flex items-center justify-center border-t border-gray-900">
+        <p class="text-gray-600 italic">Next section: Experience...</p>
+    </section>
+  </main>
 </BaseLayout>
