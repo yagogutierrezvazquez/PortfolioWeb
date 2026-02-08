@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+/* Tema: Hacker Minimalist 
+  Aquí definiremos variables más adelante, 
+  por ahora inicializamos el motor.
+*/
+:root {
+  --color-bg: #0a0a0a;
+  --color-text: #e5e5e5;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: monospace; /* Placeholder hasta poner JetBrains/Fira */
+}
