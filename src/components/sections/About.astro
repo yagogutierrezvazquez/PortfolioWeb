@@ -32,17 +32,19 @@ import profileImg from '../../assets/images/profile.png';
     </div>
 
     <div class="relative group order-1 md:order-2">
-      <div class="absolute -inset-1 bg-green-500/20 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-      <div class="relative w-48 h-48 md:w-64 md:h-64 rounded-full border-2 border-white/10 overflow-hidden bg-black">
+      <div class="absolute -inset-2 bg-green-500/30 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition duration-500"></div>
+      
+      <div class="relative w-48 h-48 md:w-64 md:h-64 rounded-full border-2 border-white/10 overflow-hidden bg-black z-10">
         <Image 
           src={profileImg} 
           alt="Yago Gutiérrez Profile" 
           width={400} 
           height={400}
-          class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </div>
-      <div class="absolute -bottom-2 -right-2 bg-green-500 text-black text-[10px] font-bold px-2 py-1 font-mono rounded-sm">
+      
+      <div class="absolute -bottom-2 -right-2 z-20 bg-green-500 text-black text-[10px] font-bold px-2 py-1 font-mono rounded-sm">
         SEC_OPERATOR
       </div>
     </div>
