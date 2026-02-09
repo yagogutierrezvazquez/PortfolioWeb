@@ -1,12 +1,35 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/sections/Hero.astro';
+import Experience from '../components/sections/Experience.astro';
+
+const remainingPlaceholders = [
+  { id: 'projects', title: 'Personal Projects', lore: 'Showcasing my latest security tools.' },
+  { id: 'writeups', title: 'Writeups', lore: 'CTF walkthroughs and research.' },
+];
 ---
 
 <BaseLayout title="Yago Gutiérrez | Portfolio">
-  <main class="bg-[#0a0a0a]"> <Hero />
-    <section class="h-screen flex items-center justify-center border-t border-gray-900">
-        <p class="text-gray-600 italic">Next section: Experience...</p>
-    </section>
+  <main>
+    <Hero />
+    <Experience />
+
+    {remainingPlaceholders.map((section) => (
+      <section 
+        id={section.id} 
+        class="min-h-screen flex flex-col items-center justify-center border-t border-white/5 px-4"
+      >
+        <h2 class="text-4xl font-mono font-bold text-green-500 mb-4 uppercase tracking-widest">
+          {section.title}
+        </h2>
+        <p class="text-gray-500 font-light italic text-sm">
+          // TODO: Build {section.id}.astro component
+        </p>
+      </section>
+    ))}
+
+    <footer class="py-20 text-center text-gray-800 border-t border-white/5">
+      <p class="font-mono text-xs">yagog.dev &copy; 2026</p>
+    </footer>
   </main>
 </BaseLayout>
