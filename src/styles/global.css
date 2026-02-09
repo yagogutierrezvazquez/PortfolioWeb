@@ -5,12 +5,9 @@
   por ahora inicializamos el motor.
 */
 :root {
-  --color-bg: #0a0a0a;
-  --color-text: #e5e5e5;
-}
-
-body {
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  font-family: monospace; /* Placeholder hasta poner JetBrains/Fira */
+  --color-brand-primary: #22c55e; /* green-500 */
+  --color-brand-bg: #0a0a0a;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+  background-color: var(--color-brand-bg);
+  color: white;
 }

@@ -1,0 +1,77 @@
+---
+/**
+ * Certificates Section
+ * Showcases professional certifications with verification links
+ */
+import { Image } from 'astro:assets';
+
+// 1. Import the actual image files
+import securityPlusBadge from '../../assets/images/certs/temp-badge.png';
+
+interface Certificate {
+  title: string;
+  issuer: string;
+  date: string;
+  verifyUrl: string;
+  image: ImageMetadata; // Change string to ImageMetadata for Astro optimization
+}
+
+const certificates: Certificate[] = [
+  {
+    title: "Security+",
+    issuer: "CompTIA",
+    date: "2024",
+    verifyUrl: "https://credly.com/...",
+    image: securityPlusBadge // Use the imported object
+  },
+  {
+    title: "eJPTv2",
+    issuer: "INE Security",
+    date: "2023",
+    verifyUrl: "https://credly.com/...",
+    image: securityPlusBadge // Reuse for testing or import another one
+  },
+  {
+    title: "Burp Suite Certified",
+    issuer: "PortSwigger",
+    date: "2024",
+    verifyUrl: "https://portswigger.net/...",
+    image: securityPlusBadge // Using same import for visual fill
+  }
+];
+---
+
+<section id="certificates" class="py-24 max-w-4xl mx-auto px-6 w-full border-t border-white/5">
+  <h2 class="text-3xl font-mono font-bold text-green-500 mb-12 uppercase tracking-tighter">
+    > Certified_Credentials
+  </h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {certificates.map((cert) => (
+      <div class="group border border-white/5 bg-white/2 p-6 rounded-sm hover:border-green-500/50 transition-all duration-300 flex flex-col items-center text-center">
+        
+        <div class="w-24 h-24 mb-6 grayscale group-hover:grayscale-0 transition-all duration-500 flex items-center justify-center">
+           <Image 
+            src={cert.image} 
+            alt={`${cert.title} badge`}
+            width={400} 
+            height={400}
+            class="max-w-full h-auto object-contain"
+           />
+        </div>
+
+        <h3 class="text-lg font-bold text-white mb-1">{cert.title}</h3>
+        <p class="text-green-500/80 font-mono text-xs mb-4">{cert.issuer}</p>
+        
+        <a 
+          href={cert.verifyUrl} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="text-[10px] uppercase tracking-widest font-mono py-2 px-4 border border-white/10 hover:bg-white hover:text-black transition-all"
+        >
+          Verify_Authenticity
+        </a>
+      </div>
+    ))}
+  </div>
+</section>

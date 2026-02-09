@@ -1,0 +1,51 @@
+---
+/**
+ * About Me Section
+ * Focuses on Cybersecurity profile with Dev background
+ */
+import { Image } from 'astro:assets';
+import profileImg from '../../assets/images/profile.png';
+---
+
+<section id="about" class="py-24 max-w-4xl mx-auto px-6 w-full border-t border-white/5">
+  <div class="flex flex-col md:flex-row items-center gap-12">
+    
+    <div class="flex-1 order-2 md:order-1">
+      <h2 class="text-3xl font-mono font-bold text-green-500 mb-6 uppercase tracking-tighter">
+        > About_Me
+      </h2>
+      <div class="space-y-4 text-gray-400 font-light leading-relaxed">
+        <p>
+          Focused on <span class="text-white font-medium">Cybersecurity and Ethical Hacking</span>. 
+          Coming from a development background, I leverage my understanding of software 
+          internals to identify vulnerabilities and build more resilient systems.
+        </p>
+        <p>
+          My goal is to protect digital assets by thinking like an attacker. I specialize in 
+          vulnerability research, penetration testing, and secure infrastructure, 
+          always keeping up with the latest threat landscape.
+        </p>
+        <p class="text-sm font-mono text-green-500/60">
+          // Building secure code is good, breaking it to make it better is my passion.
+        </p>
+      </div>
+    </div>
+
+    <div class="relative group order-1 md:order-2">
+      <div class="absolute -inset-1 bg-green-500/20 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+      <div class="relative w-48 h-48 md:w-64 md:h-64 rounded-full border-2 border-white/10 overflow-hidden bg-black">
+        <Image 
+          src={profileImg} 
+          alt="Yago Gutiérrez Profile" 
+          width={400} 
+          height={400}
+          class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+        />
+      </div>
+      <div class="absolute -bottom-2 -right-2 bg-green-500 text-black text-[10px] font-bold px-2 py-1 font-mono rounded-sm">
+        SEC_OPERATOR
+      </div>
+    </div>
+
+  </div>
+</section>

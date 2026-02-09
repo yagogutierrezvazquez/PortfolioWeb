@@ -2,6 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/sections/Hero.astro';
 import Experience from '../components/sections/Experience.astro';
+import Certificates from '../components/sections/Certificates.astro';
+import About from '../components/sections/About.astro';
 
 const remainingPlaceholders = [
   { id: 'projects', title: 'Personal Projects', lore: 'Showcasing my latest security tools.' },
@@ -13,18 +15,15 @@ const remainingPlaceholders = [
   <main>
     <Hero />
     <Experience />
+    <Certificates />
+    <About />
 
     {remainingPlaceholders.map((section) => (
-      <section 
-        id={section.id} 
-        class="min-h-screen flex flex-col items-center justify-center border-t border-white/5 px-4"
-      >
-        <h2 class="text-4xl font-mono font-bold text-green-500 mb-4 uppercase tracking-widest">
-          {section.title}
+      <section id={section.id} class="min-h-[50vh] flex flex-col items-center justify-center border-t border-white/5 px-6">
+        <h2 class="text-3xl font-mono font-bold text-green-500 uppercase tracking-tighter">
+          > {section.title}
         </h2>
-        <p class="text-gray-500 font-light italic text-sm">
-          // TODO: Build {section.id}.astro component
-        </p>
+        <p class="text-gray-600 italic mt-4">// Coming soon...</p>
       </section>
     ))}
 
