@@ -1,0 +1,77 @@
+---
+/**
+ * Tech Stack Section
+ * Accordion-style showcase of tools and technologies
+ */
+import { Image } from 'astro:assets';
+import stackPlaceholder from '../../assets/images/stack/placeholder.png';
+
+// Ejemplo de importación (Descomenta y ajusta cuando tengas tus logos)
+// import kaliLogo from '../../assets/images/stack/kali.png';
+// import pythonLogo from '../../assets/images/stack/python.png';
+// import reactLogo from '../../assets/images/stack/react.png';
+
+// Placeholder temporal para que el código compile si no tienes imágenes aún
+const tempIcon = "https://placehold.co/100x100/22c55e/black.png?text=TECH";
+
+const stack = [
+  {
+    category: "Cybersecurity_Arsenal",
+    id: "cyber",
+    // icons: [kaliLogo, burpLogo, metasploitLogo...]
+    icons: Array(12).fill(stackPlaceholder)
+  },
+  {
+    category: "Full_Stack_Dev",
+    id: "dev",
+    // icons: [reactLogo, astroLogo, tailwindLogo, nodeLogo...]
+    icons: Array(8).fill(stackPlaceholder)
+  }
+];
+---
+
+<section id="stack" class="py-24 max-w-4xl mx-auto px-6 w-full border-t border-white/5">
+  <h2 class="text-3xl font-mono font-bold text-green-500 mb-12 uppercase tracking-tighter">
+    > Developer_Stack
+  </h2>
+
+  <div class="space-y-4">
+    {stack.map((group) => (
+      <details class="group border border-white/10 bg-white/2 rounded-sm open:bg-white/4 transition-colors duration-300">
+        
+        <summary class="flex items-center justify-between p-6 cursor-pointer list-none select-none">
+          <div class="flex items-center gap-4">
+            <span class="text-green-500 font-mono text-lg font-bold">></span>
+            <h3 class="text-xl font-bold text-gray-200 group-hover:text-white transition-colors">
+              {group.category}
+            </h3>
+          </div>
+          
+          <svg 
+            class="w-5 h-5 text-gray-500 group-open:rotate-180 group-open:text-green-500 transition-transform duration-300" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
+
+        <div class="px-6 pb-8 pt-6 border-t border-white/5">
+          <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-4 justify-items-center">
+            {group.icons.map((icon) => (
+              <div class="w-12 h-12 md:w-14 md:h-14 p-2 bg-white/5 rounded-md hover:bg-white/10 hover:scale-110 transition-all duration-300 flex items-center justify-center border border-white/5 hover:border-green-500/30">
+                <Image 
+                  src={icon} 
+                  alt="Tech Stack Tool" 
+                  class="w-full h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity" 
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </details>
+    ))}
+  </div>
+</section>

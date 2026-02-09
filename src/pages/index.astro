@@ -4,6 +4,7 @@ import Hero from '../components/sections/Hero.astro';
 import Experience from '../components/sections/Experience.astro';
 import Certificates from '../components/sections/Certificates.astro';
 import About from '../components/sections/About.astro';
+import Stack from '../components/sections/Stack.astro';
 
 const remainingPlaceholders = [
   { id: 'projects', title: 'Personal Projects', lore: 'Showcasing my latest security tools.' },
@@ -17,6 +18,7 @@ const remainingPlaceholders = [
     <Experience />
     <Certificates />
     <About />
+    <Stack />
 
     {remainingPlaceholders.map((section) => (
       <section id={section.id} class="min-h-[50vh] flex flex-col items-center justify-center border-t border-white/5 px-6">
