@@ -1,13 +1,14 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
-/* Tema: Hacker Minimalist 
-  Aquí definiremos variables más adelante, 
-  por ahora inicializamos el motor.
-*/
-:root {
-  --color-brand-primary: #22c55e; /* green-500 */
+@theme {
+  --color-brand-primary: #22c55e;
   --color-brand-bg: #0a0a0a;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
+}
+
+/* CSS */
+:root {
   background-color: var(--color-brand-bg);
   color: white;
 }
