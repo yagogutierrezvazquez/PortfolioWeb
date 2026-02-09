@@ -6,9 +6,10 @@ import Certificates from '../components/sections/Certificates.astro';
 import About from '../components/sections/About.astro';
 import Stack from '../components/sections/Stack.astro';
 import Projects from '../components/sections/Projects.astro';
+import Writeups from '../components/sections/Writeups.astro';
 
 const remainingPlaceholders = [
-  { id: 'writeups', title: 'Writeups', lore: 'CTF walkthroughs and research.' },
+  { id: 'id_example', title: 'name_example', lore: 'lore_example' },
 ];
 ---
 
@@ -20,15 +21,16 @@ const remainingPlaceholders = [
     <About />
     <Stack />
     <Projects />
+    <Writeups />
 
-    {remainingPlaceholders.map((section) => (
+    {/*remainingPlaceholders.map((section) => (
       <section id={section.id} class="min-h-[50vh] flex flex-col items-center justify-center border-t border-white/5 px-6">
         <h2 class="text-3xl font-mono font-bold text-green-500 uppercase tracking-tighter">
           > {section.title}
         </h2>
         <p class="text-gray-600 italic mt-4">// Coming soon...</p>
       </section>
-    ))}
+    ))*/}
 
     <footer class="py-20 text-center text-gray-800 border-t border-white/5">
       <p class="font-mono text-xs">yagog.dev &copy; 2026</p>
