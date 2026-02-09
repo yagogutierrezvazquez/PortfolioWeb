@@ -1,0 +1,82 @@
+---
+import { Image } from 'astro:assets';
+// Cuando tengas capturas reales:
+// import project1Img from '../../assets/images/projects/portfolio.png';
+// import project2Img from '../../assets/images/projects/tfg.png';
+
+// Placeholder de "Code/Terminal" elegante
+const placeholderImg = "https://placehold.co/600x400/1a1a1a/22c55e/png?text=CODE_PREVIEW";
+
+const projects = [
+  {
+    title: "Secured Portfolio V1",
+    status: "Live",
+    tech: ["Astro", "Tailwind", "TypeScript"],
+    description: "Personal folio built with performance and security in mind. Features strict content security policies, zero-js runtime (mostly), and accessible architecture.",
+    link: "https://github.com/yagogutierrezvazquez/PortfolioWeb",
+    image: placeholderImg
+  },
+  {
+    title: "Degree Final Project (TFG)",
+    status: "Archived",
+    tech: ["Angular", "Node.js", "Bootstrap"],
+    description: "Full-stack web application developed for the Higher Technician degree. Implements complex data relationships, user authentication flows, and responsive UI design.",
+    link: "https://github.com/yagogutierrezvazquez/SuccessStreet",
+    image: placeholderImg
+  }
+];
+---
+
+<section id="projects" class="py-24 max-w-4xl mx-auto px-6 w-full border-t border-white/5">
+  <h2 class="text-3xl font-mono font-bold text-green-500 mb-12 uppercase tracking-tighter">
+    > Featured_Projects
+  </h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    {projects.map((project) => (
+      <article class="group relative bg-white/2 border border-white/10 rounded-sm overflow-hidden hover:border-green-500/30 transition-all duration-300 flex flex-col h-full">
+        
+        <a href={project.link} target="_blank" class="block overflow-hidden h-48 relative">
+          <div class="absolute inset-0 bg-green-500/10 group-hover:bg-transparent transition-colors z-10"></div>
+          {/* Usar <Image /> cuando tengas los archivos locales. Por ahora img normal para el placeholder remoto */}
+          <img 
+            src={project.image} 
+            alt={project.title} 
+            class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 grayscale group-hover:grayscale-0"
+          />
+        </a>
+
+        <div class="p-6 flex flex-col flex-1">
+          <div class="flex justify-between items-start mb-4">
+            <h3 class="text-xl font-bold text-white group-hover:text-green-400 transition-colors">
+              {project.title}
+            </h3>
+            <span class="text-[10px] border border-green-500/30 text-green-500 px-2 py-1 rounded-sm font-mono uppercase">
+              {project.status}
+            </span>
+          </div>
+
+          <p class="text-gray-400 text-sm leading-relaxed mb-6 flex-1">
+            {project.description}
+          </p>
+
+          <div class="flex flex-wrap gap-2 mb-2">
+            {project.tech.map((t) => (
+              <span class="text-xs text-gray-500 font-mono bg-white/5 px-2 py-2 rounded-sm">
+                #{t}
+              </span>
+            ))}
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+  
+  <div class="mt-12 text-center">
+    <p class="text-gray-500 font-mono text-sm">
+      // More cybersecurity tools and scripts in development...
+      <a href="https://github.com/yagogutierrezvazquez" target="_blank" class="text-green-500 hover:underline ml-2">Check GitHub</a>
+    </p>
+  </div>
+
+</section>

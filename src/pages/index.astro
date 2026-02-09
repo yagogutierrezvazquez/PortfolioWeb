@@ -5,9 +5,9 @@ import Experience from '../components/sections/Experience.astro';
 import Certificates from '../components/sections/Certificates.astro';
 import About from '../components/sections/About.astro';
 import Stack from '../components/sections/Stack.astro';
+import Projects from '../components/sections/Projects.astro';
 
 const remainingPlaceholders = [
-  { id: 'projects', title: 'Personal Projects', lore: 'Showcasing my latest security tools.' },
   { id: 'writeups', title: 'Writeups', lore: 'CTF walkthroughs and research.' },
 ];
 ---
@@ -19,6 +19,7 @@ const remainingPlaceholders = [
     <Certificates />
     <About />
     <Stack />
+    <Projects />
 
     {remainingPlaceholders.map((section) => (
       <section id={section.id} class="min-h-[50vh] flex flex-col items-center justify-center border-t border-white/5 px-6">
