@@ -1,25 +1,69 @@
 ---
-/**
- * Navigation component
- * Provides anchor links for the one-page scroll logic
- */
 const navItems = [
-  { name: 'Home', href: '#' },
-  { name: 'Experience', href: '#experience' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'Writeups', href: '#writeups' },
+  { name: 'Home', url: '/#top' },
+  { name: 'About', url: '/#about' },
+  { name: 'Stack', url: '/#stack' },
+  { name: 'Exp', url: '/#experience' },
+  { name: 'Certs', url: '/#certificates' },
+  { name: 'Projects', url: '/#projects' },
+  { name: 'Writeups', url: '/#writeups' },
 ];
 ---
 
-<nav class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
-  <div class="flex items-center gap-6 px-6 py-3 rounded-full border border-white/10 bg-black/50 backdrop-blur-md shadow-2xl">
-    {navItems.map(item => (
-      <a 
-        href={item.href}
-        class="text-sm font-mono text-gray-400 hover:text-green-500 transition-colors duration-200"
-      >
-        {item.name}
-      </a>
-    ))}
+<nav class="fixed top-0 left-0 w-full z-50 bg-brand-bg/80 backdrop-blur-md border-b border-white/5">
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    
+    <a href="/#top" class="text-xl font-bold font-mono tracking-tighter text-white hover:text-green-500 transition-colors">
+      &lt;yagogutierrezvazquez/&gt;
+    </a>
+
+    <div class="hidden md:flex items-center gap-1">
+      {navItems.map((item) => (
+        <a 
+          href={item.url}
+          class="px-4 py-2 text-xs font-mono text-gray-400 hover:text-green-500 hover:bg-white/5 rounded-sm transition-all uppercase tracking-wider"
+        >
+          {item.name}
+        </a>
+      ))}
+    </div>
+
+    <button id="mobile-menu-btn" class="md:hidden text-gray-400 hover:text-white">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div id="mobile-menu" class="hidden md:hidden bg-brand-bg border-b border-white/10 absolute w-full">
+    <div class="flex flex-col p-4 space-y-2">
+      {navItems.map((item) => (
+        <a 
+          href={item.url}
+          class="block px-4 py-3 text-sm font-mono text-gray-400 hover:text-green-500 hover:bg-white/5 rounded-sm border-l-2 border-transparent hover:border-green-500 transition-all"
+        >
+          > {item.name}
+        </a>
+      ))}
+    </div>
   </div>
 </nav>
+
+<script>
+  // Simple Toggle Logic for Mobile Menu
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+
+  if (btn && menu) {
+    btn.addEventListener('click', () => {
+      menu.classList.toggle('hidden');
+    });
+
+    // Close menu when clicking a link
+    menu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        menu.classList.add('hidden');
+      });
+    });
+  }
+</script>
