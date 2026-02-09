@@ -1,0 +1,25 @@
+---
+/**
+ * Navigation component
+ * Provides anchor links for the one-page scroll logic
+ */
+const navItems = [
+  { name: 'Home', href: '#' },
+  { name: 'Experience', href: '#experience' },
+  { name: 'Projects', href: '#projects' },
+  { name: 'Writeups', href: '#writeups' },
+];
+---
+
+<nav class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
+  <div class="flex items-center gap-6 px-6 py-3 rounded-full border border-white/10 bg-black/50 backdrop-blur-md shadow-2xl">
+    {navItems.map(item => (
+      <a 
+        href={item.href}
+        class="text-sm font-mono text-gray-400 hover:text-green-500 transition-colors duration-200"
+      >
+        {item.name}
+      </a>
+    ))}
+  </div>
+</nav>
