@@ -1,43 +1,98 @@
 ---
 /**
- * Tech Stack Section
- * Accordion-style showcase of tools and technologies
+ * @component Stack.astro
+ * @description Visual showcase of the technology stack (Cybersecurity & Full Stack).
+ * Features:
+ * - Native HTML Accordion (<details>) for collapsible sections.
+ * - Interactive Tooltips on hover using group/peer CSS logic.
+ * - Optimized asset loading via Astro <Image />.
  */
 import { Image } from 'astro:assets';
-import stackPlaceholder from '../../assets/images/stack/placeholder.png';
 
-// Ejemplo de importación (Descomenta y ajusta cuando tengas tus logos)
-// import kaliLogo from '../../assets/images/stack/kali.png';
-// import pythonLogo from '../../assets/images/stack/python.png';
-// import reactLogo from '../../assets/images/stack/react.png';
+// --- ASSETS: CYBERSECURITY ARSENAL ---
+import bash from '../../assets/images/stack/cyber/bash.png';
+import burp from '../../assets/images/stack/cyber/burp.png';
+import gobuster from '../../assets/images/stack/cyber/gobuster.svg';
+import hydra from '../../assets/images/stack/cyber/hydra.svg';
+import john from '../../assets/images/stack/cyber/johntheripper.png';
+import kali from '../../assets/images/stack/cyber/kali.png';
+import linux from '../../assets/images/stack/cyber/linux.png';
+import metasploit from '../../assets/images/stack/cyber/metasploit.png';
+import nessus from '../../assets/images/stack/cyber/nessus.png';
+import nmap from '../../assets/images/stack/cyber/nmap.png';
+import zap from '../../assets/images/stack/cyber/owaspzap.png';
+import wireshark from '../../assets/images/stack/cyber/wireshark.png';
 
-// Placeholder temporal para que el código compile si no tienes imágenes aún
-const tempIcon = "https://placehold.co/100x100/22c55e/black.png?text=TECH";
+// --- ASSETS: WEB & DEVELOPMENT ---
+import astroLogo from '../../assets/images/stack/devweb/astro.png';
+import css from '../../assets/images/stack/devweb/css.png';
+import docker from '../../assets/images/stack/devweb/docker.png';
+import git from '../../assets/images/stack/devweb/git.png';
+import html from '../../assets/images/stack/devweb/html.png';
+import java from '../../assets/images/stack/devweb/java.png';
+import js from '../../assets/images/stack/devweb/javascript.svg';
+import postman from '../../assets/images/stack/devweb/postman.png';
+import react from '../../assets/images/stack/devweb/react.png';
+import spring from '../../assets/images/stack/devweb/spring-boot.png';
+import sql from '../../assets/images/stack/devweb/sql.png';
+import tailwind from '../../assets/images/stack/devweb/tailwind.png';
+import vscode from '../../assets/images/stack/devweb/vscode.png';
 
+// --- CONFIGURATION ---
 const stack = [
   {
     category: "Cybersecurity_Arsenal",
     id: "cyber",
-    // icons: [kaliLogo, burpLogo, metasploitLogo...]
-    icons: Array(12).fill(stackPlaceholder)
+    items: [
+      { name: "Kali Linux", icon: kali },
+      { name: "Burp Suite", icon: burp },
+      { name: "Metasploit", icon: metasploit },
+      { name: "Nmap", icon: nmap },
+      { name: "Wireshark", icon: wireshark },
+      { name: "Hydra", icon: hydra },
+      { name: "John the Ripper", icon: john },
+      { name: "Nessus", icon: nessus },
+      { name: "Gobuster", icon: gobuster },
+      { name: "OWASP ZAP", icon: zap },
+      { name: "Linux", icon: linux },
+      { name: "Bash Scripting", icon: bash },
+    ]
   },
   {
     category: "Full_Stack_Dev",
     id: "dev",
-    // icons: [reactLogo, astroLogo, tailwindLogo, nodeLogo...]
-    icons: Array(8).fill(stackPlaceholder)
+    items: [
+      { name: "Java", icon: java },
+      { name: "Spring Boot", icon: spring },
+      { name: "HTML5", icon: html },
+      { name: "CSS3", icon: css },
+      { name: "JavaScript", icon: js },
+      { name: "SQL", icon: sql },
+      { name: "React", icon: react },
+      { name: "Astro", icon: astroLogo },
+      { name: "Tailwind CSS", icon: tailwind },
+      { name: "Git", icon: git },
+      { name: "Docker", icon: docker },
+      { name: "Postman", icon: postman },
+      { name: "VS Code", icon: vscode },
+    ]
   }
 ];
 ---
 
 <section id="stack" class="py-24 max-w-4xl mx-auto px-6 w-full border-t border-white/5">
+  
   <h2 class="text-2xl md:text-3xl font-mono font-bold text-green-500 mb-8 md:mb-12 uppercase tracking-tighter">
     > Developer_Stack
   </h2>
 
   <div class="space-y-4">
     {stack.map((group) => (
-      <details class="group border border-white/10 bg-white/2 rounded-sm open:bg-white/4 transition-colors duration-300">
+      /* * Native Accordion (<details>)
+       * 'open' attribute logic: Keeps the 'cyber' section open by default.
+       * 'group' class allows styling the arrow icon based on open/closed state.
+       */
+      <details class="group border border-white/10 bg-brand-bg rounded-sm open:bg-white/5 transition-colors duration-300" open={group.id === 'cyber'}>
         
         <summary class="flex items-center justify-between p-6 cursor-pointer list-none select-none">
           <div class="flex items-center gap-4">
@@ -58,16 +113,26 @@ const stack = [
         </summary>
 
         <div class="px-6 pb-8 pt-6 border-t border-white/5">
-          <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-4 justify-items-center">
-            {group.icons.map((icon) => (
-              <div class="w-12 h-12 md:w-14 md:h-14 p-2 bg-white/5 rounded-md hover:bg-white/10 hover:scale-110 transition-all duration-300 flex items-center justify-center border border-white/5 hover:border-green-500/30">
-                <Image 
-                  src={icon} 
-                  alt="Tech Stack Tool" 
-                  class="w-full h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity" 
-                />
+          <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-y-10 gap-x-4 justify-items-center">
+            
+            {group.items.map((tool) => (
+              <div class="group/icon relative flex flex-col items-center">
+                
+                <div class="w-14 h-14 md:w-16 md:h-16 p-3 bg-white/5 rounded-md group-hover/icon:bg-white/10 group-hover/icon:scale-110 transition-all duration-300 flex items-center justify-center border border-white/5 group-hover/icon:border-green-500/30 shadow-sm z-10">
+                  <Image 
+                    src={tool.icon} 
+                    alt={tool.name} 
+                    class="w-full h-full object-contain opacity-80 group-hover/icon:opacity-100 transition-opacity" 
+                  />
+                </div>
+                
+                <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-black/90 border border-green-500/30 text-green-500 text-[10px] font-mono rounded opacity-0 group-hover/icon:opacity-100 transition-all duration-300 whitespace-nowrap z-20 pointer-events-none shadow-[0_0_10px_rgba(34,197,94,0.2)]">
+                  {tool.name}
+                </span>
+
               </div>
             ))}
+
           </div>
         </div>
 
