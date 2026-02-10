@@ -1,77 +1,106 @@
 ---
 /**
- * Certificates Section
- * Showcases professional certifications with verification links
+ * @component Certificates.astro
+ * @description Sección de certificaciones en Grid.
+ * Muestra las credenciales ordenadas cronológicamente.
  */
-import { Image } from 'astro:assets';
 
-// 1. Import the actual image files
-import securityPlusBadge from '../../assets/images/certs/temp-badge.png';
-
+// --- CONFIGURATION ---
 interface Certificate {
-  title: string;
+  name: string;
   issuer: string;
   date: string;
-  verifyUrl: string;
-  image: ImageMetadata; // Change string to ImageMetadata for Astro optimization
+  image: string; 
+  url: string;   
 }
 
 const certificates: Certificate[] = [
   {
-    title: "Security+",
-    issuer: "CompTIA",
-    date: "2024",
-    verifyUrl: "https://credly.com/...",
-    image: securityPlusBadge // Use the imported object
-  },
-  {
-    title: "eJPTv2",
+    name: "Junior Penetration Tester (eJPT)",
     issuer: "INE Security",
-    date: "2023",
-    verifyUrl: "https://credly.com/...",
-    image: securityPlusBadge // Reuse for testing or import another one
+    date: "January 2026",
+    image: "/certificates/ejpt.png",
+    url: "https://certs.ine.com/9d7755f7-439e-41a6-a978-a8a60e59f65c#acc.fSDbtR1s" 
   },
   {
-    title: "Burp Suite Certified",
-    issuer: "PortSwigger",
-    date: "2024",
-    verifyUrl: "https://portswigger.net/...",
-    image: securityPlusBadge // Using same import for visual fill
+    name: "IT Specialist - Cybersecurity",
+    issuer: "Certiport (Pearson VUE)",
+    date: "December 2025",
+    image: "/certificates/its-cyber.png",
+    url: "https://www.credly.com/badges/cc810567-b64d-4a9c-a07a-a325f0a7fda8/public_url"
+  },
+  {
+    name: "IT Specialist - Network Security",
+    issuer: "Certiport (Pearson VUE)",
+    date: "December 2025",
+    image: "/certificates/its-network.png",
+    url: "https://www.credly.com/badges/ff2212c9-d406-4bad-a7d8-bbefe0e11360/public_url"
+  },
+  {
+    name: "Microsoft Certified: Security, Compliance, and Identity Fundamentals (SC-900)",
+    issuer: "Microsoft",
+    date: "December 2025",
+    image: "/certificates/sc-900.png",
+    url: "https://www.credly.com/badges/0c51850d-c77d-4893-a660-8b2e4f064814/public_url"
+  },
+  {
+    name: "Junior Cybersecurity Analyst Career Path",
+    issuer: "Cisco",
+    date: "March 2024",
+    image: "/certificates/cisco-jr.png",
+    url: "https://www.credly.com/badges/df64e9f3-cd41-48a8-bd1f-f070e3f57bdc/public_url"
   }
 ];
 ---
 
-<section id="certificates" class="py-24 max-w-4xl mx-auto px-6 w-full border-t border-white/5">
-  <h2 class="text-2xl md:text-3xl font-mono font-bold text-green-500 mb-8 md:mb-12 uppercase tracking-tighter">
+<section id="certificates" class="py-24 max-w-6xl mx-auto px-6 border-t border-white/5">
+  
+  <h2 class="text-xl md:text-3xl font-mono font-bold text-green-500 mb-12 uppercase tracking-tighter">
     > Certified_Credentials
   </h2>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    
     {certificates.map((cert) => (
-      <div class="group border border-white/5 bg-white/2 p-6 rounded-sm hover:border-green-500/50 transition-all duration-300 flex flex-col items-center text-center">
-        
-        <div class="w-24 h-24 mb-6 grayscale group-hover:grayscale-0 transition-all duration-500 flex items-center justify-center">
-           <Image 
-            src={cert.image} 
-            alt={`${cert.title} badge`}
-            width={400} 
-            height={400}
-            class="max-w-full h-auto object-contain"
-           />
+      <a 
+        href={cert.url} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        class="group relative bg-[#111] border border-white/10 p-6 rounded-sm hover:border-green-500/50 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full"
+      >
+        <div class="flex-1">
+          <div class="h-14 w-14 mb-4 p-2 bg-white/5 rounded-sm group-hover:bg-white/10 transition-colors">
+            <img 
+              src={cert.image} 
+              alt={`${cert.name} badge`} 
+              class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+              loading="lazy"
+            />
+          </div>
+
+          <div>
+            <h3 class="text-lg font-bold text-white leading-tight mb-2 group-hover:text-green-400 transition-colors">
+              {cert.name}
+            </h3>
+            <p class="text-sm text-gray-400 font-mono">
+              {cert.issuer}
+            </p>
+          </div>
         </div>
 
-        <h3 class="text-lg font-bold text-white mb-1">{cert.title}</h3>
-        <p class="text-green-500/80 font-mono text-xs mb-4">{cert.issuer}</p>
-        
-        <a 
-          href={cert.verifyUrl} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="text-[10px] uppercase tracking-widest font-mono py-2 px-4 border border-white/10 hover:bg-white hover:text-black transition-all"
-        >
-          Verify_Authenticity
-        </a>
-      </div>
+        <div class="mt-6 border-t border-white/5 pt-4">
+          <p class="text-xs text-gray-600 font-mono uppercase tracking-wide group-hover:text-gray-500 transition-colors">
+            Issued: {cert.date}
+          </p>
+        </div>
+
+        <div class="absolute top-4 right-4 text-gray-600 group-hover:text-green-500 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </div>
+      </a>
     ))}
+
   </div>
 </section>
