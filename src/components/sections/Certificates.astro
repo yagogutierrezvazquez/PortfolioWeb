@@ -1,19 +1,23 @@
 ---
 /**
  * @component Certificates.astro
- * @description Sección de certificaciones en Grid.
- * Muestra las credenciales ordenadas cronológicamente.
+ * @description Displays professional certifications in a responsive grid layout.
+ * Each card includes a direct link to the credential authority (Credly/INE) for validation.
+ * @dependencies Requires certification images to be present in 'public/certificates/'.
  */
 
-// --- CONFIGURATION ---
+// --- TYPES ---
 interface Certificate {
   name: string;
   issuer: string;
   date: string;
+  /** Path to image in public folder (e.g., "/certificates/ejpt.png") */
   image: string; 
+  /** External validation URL (Credly, Accredible, etc.) */
   url: string;   
 }
 
+// --- CONFIGURATION ---
 const certificates: Certificate[] = [
   {
     name: "Junior Penetration Tester (eJPT)",
