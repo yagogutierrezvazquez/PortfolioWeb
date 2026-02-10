@@ -1,110 +1,75 @@
 ---
 /**
  * @component Certificates.astro
- * @description Displays professional certifications in a responsive grid layout.
- * Each card includes a direct link to the credential authority (Credly/INE) for validation.
- * @dependencies Requires certification images to be present in 'public/certificates/'.
+ * @description Infinite Scrolling Carousel showing latest certifications.
+ * Reads data from central store to ensure consistency with /certs page.
  */
 
-// --- TYPES ---
-interface Certificate {
-  name: string;
-  issuer: string;
-  date: string;
-  /** Path to image in public folder (e.g., "/certificates/ejpt.png") */
-  image: string; 
-  /** External validation URL (Credly, Accredible, etc.) */
-  url: string;   
-}
+import { certificates } from '../../data/certificates';
 
-// --- CONFIGURATION ---
-const certificates: Certificate[] = [
-  {
-    name: "Junior Penetration Tester (eJPT)",
-    issuer: "INE Security",
-    date: "January 2026",
-    image: "/certificates/ejpt.png",
-    url: "https://certs.ine.com/9d7755f7-439e-41a6-a978-a8a60e59f65c#acc.fSDbtR1s" 
-  },
-  {
-    name: "IT Specialist - Cybersecurity",
-    issuer: "Certiport (Pearson VUE)",
-    date: "December 2025",
-    image: "/certificates/its-cyber.png",
-    url: "https://www.credly.com/badges/cc810567-b64d-4a9c-a07a-a325f0a7fda8/public_url"
-  },
-  {
-    name: "IT Specialist - Network Security",
-    issuer: "Certiport (Pearson VUE)",
-    date: "December 2025",
-    image: "/certificates/its-network.png",
-    url: "https://www.credly.com/badges/ff2212c9-d406-4bad-a7d8-bbefe0e11360/public_url"
-  },
-  {
-    name: "Microsoft Certified: Security, Compliance, and Identity Fundamentals (SC-900)",
-    issuer: "Microsoft",
-    date: "December 2025",
-    image: "/certificates/sc-900.png",
-    url: "https://www.credly.com/badges/0c51850d-c77d-4893-a660-8b2e4f064814/public_url"
-  },
-  {
-    name: "Junior Cybersecurity Analyst Career Path",
-    issuer: "Cisco",
-    date: "March 2024",
-    image: "/certificates/cisco-jr.png",
-    url: "https://www.credly.com/badges/df64e9f3-cd41-48a8-bd1f-f070e3f57bdc/public_url"
-  }
-];
+// Duplicate array for infinite loop illusion
+const allCertificates = [...certificates, ...certificates];
 ---
 
-<section id="certificates" class="py-24 max-w-6xl mx-auto px-6 border-t border-white/5">
+<section id="certificates" class="py-24 max-w-4xl mx-auto px-6 border-t border-white/5 relative overflow-hidden">
   
   <h2 class="text-xl md:text-3xl font-mono font-bold text-green-500 mb-12 uppercase tracking-tighter">
     > Certified_Credentials
   </h2>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div class="relative w-full mask-[linear-gradient(to_right,transparent_0,black_128px,black_calc(100%-128px),transparent_100%)]">
     
-    {certificates.map((cert) => (
-      <a 
-        href={cert.url} 
-        target="_blank" 
-        rel="noopener noreferrer"
-        class="group relative bg-[#111] border border-white/10 p-6 rounded-sm hover:border-green-500/50 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full"
-      >
-        <div class="flex-1">
-          <div class="h-14 w-14 mb-4 p-2 bg-white/5 rounded-sm group-hover:bg-white/10 transition-colors">
-            <img 
-              src={cert.image} 
-              alt={`${cert.name} badge`} 
-              class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity"
-              loading="lazy"
-            />
+    <div class="flex gap-6 w-max animate-infinite-scroll hover:[animation-play-state:paused]">
+      {allCertificates.map((cert) => (
+        <a 
+          href={cert.url} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="shrink-0 w-70 md:w-[320px] bg-[#111] border border-white/10 p-6 rounded-sm hover:border-green-500/50 transition-all duration-300 group flex flex-col h-full relative"
+        >
+          <div class="absolute inset-0 bg-green-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+
+          <div class="flex-1 mb-4">
+            <div class="h-14 w-14 mb-5 p-2 bg-white/5 rounded-sm group-hover:bg-white/10 transition-colors">
+              <img src={cert.image} alt={cert.name} class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity" loading="lazy" />
+            </div>
+            
+            <div class="min-h-14 flex items-center">
+              <h3 class="text-md font-bold text-white leading-tight group-hover:text-green-400 transition-colors">
+                {cert.name}
+              </h3>
+            </div>
+
+            <p class="text-xs text-gray-400 font-mono mt-2">{cert.issuer}</p>
           </div>
 
-          <div>
-            <h3 class="text-lg font-bold text-white leading-tight mb-2 group-hover:text-green-400 transition-colors">
-              {cert.name}
-            </h3>
-            <p class="text-sm text-gray-400 font-mono">
-              {cert.issuer}
-            </p>
+          <div class="mt-4 border-t border-white/5 pt-4">
+            <p class="text-[10px] text-gray-600 font-mono uppercase tracking-wide">Issued: {cert.date}</p>
           </div>
-        </div>
 
-        <div class="mt-6 border-t border-white/5 pt-4">
-          <p class="text-xs text-gray-600 font-mono uppercase tracking-wide group-hover:text-gray-500 transition-colors">
-            Issued: {cert.date}
-          </p>
-        </div>
-
-        <div class="absolute top-4 right-4 text-gray-600 group-hover:text-green-500 transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-          </svg>
-        </div>
-      </a>
-    ))}
-
+          <div class="absolute top-4 right-4 text-gray-600 group-hover:text-green-500 transition-colors">
+             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+          </div>
+        </a>
+      ))}
+    </div>
   </div>
+
+  <div class="mt-12 text-center">
+    <a href="/certs" class="inline-flex items-center gap-2 text-sm font-mono text-gray-400 hover:text-green-500 transition-colors border-b border-transparent hover:border-green-500 pb-1">
+      <span>View all certifications</span>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+    </a>
+  </div>
+
 </section>
+
+<style>
+  @keyframes infinite-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .animate-infinite-scroll {
+    animation: infinite-scroll 25s linear infinite;
+  }
+</style>
