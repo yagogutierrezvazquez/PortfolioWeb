@@ -1,12 +1,16 @@
 ---
+/**
+ * @component Projects.astro
+ * @description Hybrid portfolio section showcasing two categories:
+ * 1. Featured Projects: Grid layout with visual previews (Web/Fullstack).
+ * 2. Tools & Scripts: List layout with terminal aesthetics (Cybersecurity/CLI).
+ */
 import { Image } from 'astro:assets';
-// Cuando tengas capturas reales:
-// import project1Img from '../../assets/images/projects/portfolio.png';
-// import project2Img from '../../assets/images/projects/tfg.png';
 
-// Placeholder de "Code/Terminal" elegante
+// --- ASSETS & PLACEHOLDERS ---
 const placeholderImg = "https://placehold.co/600x400/1a1a1a/22c55e/png?text=CODE_PREVIEW";
 
+// --- DATA: MAIN PROJECTS (WEB/FULLSTACK) ---
 const projects = [
   {
     title: "Secured Portfolio V1",
@@ -25,20 +29,36 @@ const projects = [
     image: placeholderImg
   }
 ];
+
+// --- DATA: TOOLS & SCRIPTS (CLI/CYBER) ---
+const tools = [
+  {
+    title: "Python Port Scanner (Placeholder)",
+    description: "Multi-threaded CLI tool for fast port scanning. Faster than standard Nmap scans for specific subnets.",
+    tech: ["Python", "Socket", "CLI"],
+    link: "#" 
+  },
+  {
+    title: "Automated Recon Script (Placeholder)",
+    description: "Bash script wrapper that automates subdomain enumeration and directory brute-forcing for CTFs.",
+    tech: ["Bash", "Recon", "Automation"],
+    link: "#" 
+  }
+];
 ---
 
 <section id="projects" class="py-24 max-w-4xl mx-auto px-6 w-full border-t border-white/5">
+  
   <h2 class="text-2xl md:text-3xl font-mono font-bold text-green-500 mb-8 md:mb-12 uppercase tracking-tighter">
     > Featured_Projects
   </h2>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
     {projects.map((project) => (
-      <article class="group relative bg-white/2 border border-white/10 rounded-sm overflow-hidden hover:border-green-500/30 transition-all duration-300 flex flex-col h-full">
+      <article class="group relative bg-white/2 border border-white/10 rounded-sm overflow-hidden hover:border-green-500/30 transition-all duration-300 flex flex-col h-full hover:-translate-y-1">
         
         <a href={project.link} target="_blank" class="block overflow-hidden h-48 relative">
           <div class="absolute inset-0 bg-green-500/10 group-hover:bg-transparent transition-colors z-10"></div>
-          {/* Usar <Image /> cuando tengas los archivos locales. Por ahora img normal para el placeholder remoto */}
           <img 
             src={project.image} 
             alt={project.title} 
@@ -60,9 +80,9 @@ const projects = [
             {project.description}
           </p>
 
-          <div class="flex flex-wrap gap-2 mb-2">
+          <div class="flex flex-wrap gap-2 mt-auto">
             {project.tech.map((t) => (
-              <span class="text-xs text-gray-500 font-mono bg-white/5 px-2 py-2 rounded-sm">
+              <span class="text-xs text-gray-500 font-mono bg-white/5 px-2 py-1 rounded-sm border border-white/5">
                 #{t}
               </span>
             ))}
@@ -72,11 +92,53 @@ const projects = [
     ))}
   </div>
   
-  <div class="mt-12 text-center">
-    <p class="text-gray-500 font-mono text-sm">
-      // More cybersecurity tools and scripts in development...
-      <a href="https://github.com/yagogutierrezvazquez" target="_blank" class="text-green-500 hover:underline ml-2">Check GitHub</a>
-    </p>
+  <div class="w-full">
+    <div class="flex flex-col gap-4">
+      {tools.map((tool) => (
+        <a 
+          href={tool.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group relative flex flex-col md:flex-row items-start md:items-center justify-between bg-white/2 border border-white/10 p-5 rounded-sm hover:border-green-500/50 hover:bg-[#111] transition-all duration-300"
+        >
+          <div class="absolute left-0 top-0 bottom-0 w-1 bg-green-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+          <div class="flex items-start gap-4 mb-4 md:mb-0">
+            <div class="mt-1 p-2 bg-white/5 rounded text-green-500 group-hover:text-white transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            </div>
+
+            <div>
+              <h4 class="text-lg font-bold text-gray-200 group-hover:text-green-400 transition-colors">
+                {tool.title}
+              </h4>
+              <p class="text-sm text-gray-500 mt-1 max-w-xl group-hover:text-gray-400">
+                {tool.description}
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
+            <div class="flex gap-2">
+              {tool.tech.map((tag) => (
+                <span class="text-xs font-mono text-gray-500 border border-white/5 px-2 py-1 rounded bg-white/2">
+                  {tag}
+                </span>
+              ))}
+            </div>
+            
+            <svg class="w-5 h-5 text-gray-600 group-hover:text-green-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <div class="mb-6 text-center pt-12">
+    <a href="https://github.com/yagogutierrezvazquez" target="_blank" class="text-gray-500 hover:text-green-500 font-mono text-sm transition-colors inline-flex items-center gap-2">
+      View more on GitHub
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+    </a>
   </div>
 
 </section>
