@@ -1,17 +1,26 @@
 ---
-
+/**
+ * @component Writeups.astro
+ * @description Section displaying a list of recent CTF walkthroughs and security reports.
+ * Fetches content dynamically from `src/content/writeups`, sorts by date (descending),
+ * and renders a responsive table-like list.
+ */
 import { getCollection } from 'astro:content';
 
+// --- DATA: FETCH & PROCESS ---
 const allWriteups = await getCollection('writeups');
 
+// Sort by newest first and limit to top 5
 const recentWriteups = allWriteups
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 5);
 
+// --- UTILS: FORMATTERS ---
 const formatDate = (date: Date) => {
   return date.toISOString().split('T')[0];
 };
 
+// Returns color class based on CTF difficulty
 const getDifficultyColor = (diff: string) => {
   switch(diff) {
     case 'Easy': return 'text-green-500';
@@ -24,7 +33,8 @@ const getDifficultyColor = (diff: string) => {
 ---
 
 <section id="writeups" class="py-24 max-w-4xl mx-auto px-6 w-full border-t border-white/5">
-  <div class="flex items-center justify-between mb-12">
+  
+  <div class="flex items-center justify-between mb-6">
     <h2 class="text-2xl md:text-3xl font-mono font-bold text-green-500 mb-8 md:mb-12 uppercase tracking-tighter">
       > Write_Ups
     </h2>
@@ -33,7 +43,7 @@ const getDifficultyColor = (diff: string) => {
     </a>
   </div>
 
-  <div class="flex flex-col border border-white/10 bg-black rounded-sm overflow-hidden">
+  <div class="flex flex-col border border-white/10 bg-black rounded-sm overflow-hidden mb-6">
     
     <div class="hidden md:flex bg-white/5 border-b border-white/10 px-6 py-3 text-xs font-mono text-gray-500 uppercase tracking-wider">
       <div class="w-32">Date</div>
