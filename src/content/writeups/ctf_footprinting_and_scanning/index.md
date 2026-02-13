@@ -9,9 +9,10 @@ cover: "./photo1.png"
 
 # CTF Report: Service Enumeration & Misconfiguration Exploitation
 
-**Date:** October 2025 
-**Target IP:** 192.18.46.3 (target.ine.local) 
-**Classification:** Assessment Methodologies / Footprinting
+**Date:** October 2025<br>
+**Classification:** Assessment Methodologies / Footprinting<br>
+**Target IP:** 192.18.46.3 (target.ine.local)
+
 
 ## 1. Executive Summary
 

@@ -1,13 +1,9 @@
 ---
-/**
- * Writeups Section
- * Displays recent CTF walkthroughs fetching data from src/content/writeups
- */
+
 import { getCollection } from 'astro:content';
 
 const allWriteups = await getCollection('writeups');
 
-// Ordenar por fecha: más reciente primero
 const recentWriteups = allWriteups
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 5);
@@ -47,7 +43,6 @@ const getDifficultyColor = (diff: string) => {
     </div>
 
     {recentWriteups.map((post) => (
-      /* CLAVE: Usamos `post.slug` para la URL limpia */
       <a 
         href={`/writeups/${post.slug}`} 
         class="group flex flex-col md:flex-row md:items-center px-6 py-4 md:py-3 border-b border-white/5 hover:bg-green-500/5 transition-colors cursor-pointer last:border-0"

@@ -9,11 +9,11 @@ cover: "./photo1.png"
 
 # CTF Report: System & Host Based Attacks (Windows, IIS & SMB)
 
-**Date:** November 2025 **Targets:**
+**Date:** November 2025<br>
+**Classification:** Host & Network Penetration Testing / System & Host Based Attacks<br>
 **Targets:**
 - Target 1: 10.2.28.186 (target1.ine.local) - IIS / WebDAV
-- Target 2: target2.ine.local - SMB **Classification:** Host Based Attacks / Service Exploitation
-**Classification:** Host & Network Penetration Testing / System & Host Based Attacks
+- Target 2: target2.ine.local - SMB
 
 ## 1. Executive Summary
 
@@ -74,7 +74,7 @@ The credentials allowed access to the default IIS landing page.
 With credentials in hand, we enumerated the web directory structure using gobuster, discovering a /webdav directory.
 
 ```bash
-gobuster dir -u [http://target1.ine.local] -w /usr/share/wordlists/dirb/common.txt -U bob --password password_123321
+gobuster dir -u http://target1.ine.local -w /usr/share/wordlists/dirb/common.txt -U bob --password password_123321
 ```
 
 ![GoBuster attack](./photo7.png)
