@@ -2,20 +2,20 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-// 1. Generar las rutas estáticas para cada archivo .md que tengas
+// 1. Generamos rutas usando el SLUG (nombre de la carpeta)
 export async function getStaticPaths() {
   const writeups = await getCollection('writeups');
   return writeups.map((entry) => ({
-    params: { id: entry.id },
+    params: { slug: entry.slug }, // ¡Aquí estaba el error! Antes usabas entry.id
     props: { entry },
   }));
 }
 
-// 2. Obtener los datos y renderizar el contenido Markdown
+// 2. Renderizamos
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 
-// Helper para colores (mismo que en la lista)
+// Helper de colores
 const getDifficultyColor = (diff: string) => {
   switch(diff) {
     case 'Easy': return 'text-green-500';
@@ -45,7 +45,7 @@ const getDifficultyColor = (diff: string) => {
       <div class="flex items-center gap-4 text-xs font-mono text-gray-500 mb-4">
         <span>{entry.data.date.toISOString().split('T')[0]}</span>
         <span class="text-green-500">/</span>
-        <span class="uppercase">Log_ID: {entry.id}</span>
+        <span class="uppercase">Log: {entry.slug}</span>
       </div>
 
       <h1 class="text-3xl md:text-5xl font-bold text-white mb-6 tracking-tight">

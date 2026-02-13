@@ -4,16 +4,12 @@
  * Displays recent CTF walkthroughs fetching data from src/content/writeups
  */
 import { getCollection } from 'astro:content';
-// 1. IMPORTANTE: Importamos el tipo para definir qué es un "Post"
-import type { CollectionEntry } from 'astro:content';
 
-// Definimos el tipo para usarlo abajo (esto lee tu esquema de config.ts)
-type WriteupPost = CollectionEntry<'writeups'>;
 const allWriteups = await getCollection('writeups');
 
-// 2. Añadimos el tipo explícito a (a, b) para corregir el error del sort
+// Ordenar por fecha: más reciente primero
 const recentWriteups = allWriteups
-  .sort((a: WriteupPost, b: WriteupPost) => b.data.date.valueOf() - a.data.date.valueOf())
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 5);
 
 const formatDate = (date: Date) => {
@@ -50,9 +46,10 @@ const getDifficultyColor = (diff: string) => {
       <div class="w-24 text-right">Difficulty</div>
     </div>
 
-    {recentWriteups.map((post: WriteupPost) => (
+    {recentWriteups.map((post) => (
+      /* CLAVE: Usamos `post.slug` para la URL limpia */
       <a 
-        href={`/writeups/${post.id}`} 
+        href={`/writeups/${post.slug}`} 
         class="group flex flex-col md:flex-row md:items-center px-6 py-4 md:py-3 border-b border-white/5 hover:bg-green-500/5 transition-colors cursor-pointer last:border-0"
       >
         <div class="flex md:hidden justify-between text-xs font-mono text-gray-500 mb-2">
@@ -75,7 +72,7 @@ const getDifficultyColor = (diff: string) => {
             {post.data.title}
           </h3>
           <div class="hidden md:flex gap-2 mt-1">
-             {post.data.tags.map((tag: string) => (
+             {post.data.tags.map((tag) => (
                <span class="text-[10px] text-gray-600 font-mono">#{tag}</span>
              ))}
           </div>
