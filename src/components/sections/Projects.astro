@@ -7,8 +7,10 @@
  */
 import { Image } from 'astro:assets';
 
-// --- ASSETS & PLACEHOLDERS ---
-const placeholderImg = "https://placehold.co/600x400/1a1a1a/22c55e/png?text=CODE_PREVIEW";
+// --- ASSETS: IMPORTS ---
+import portfolioImg from '../../assets/images/projects/portfolioweb.png';
+import tfgImg from '../../assets/images/projects/successstreet.png';
+
 
 // --- DATA: MAIN PROJECTS (WEB/FULLSTACK) ---
 const projects = [
@@ -18,7 +20,7 @@ const projects = [
     tech: ["Astro", "Tailwind", "TypeScript"],
     description: "Personal folio built with performance and security in mind. Features strict content security policies, zero-js runtime (mostly), and accessible architecture.",
     link: "https://github.com/yagogutierrezvazquez/PortfolioWeb",
-    image: placeholderImg
+    image: portfolioImg
   },
   {
     title: "Degree Final Project (TFG)",
@@ -26,7 +28,7 @@ const projects = [
     tech: ["Angular", "NodeJS", "Bootstrap"],
     description: "Full-stack web application developed for the Higher Technician degree. Implements complex data relationships, user authentication flows, and responsive UI design.",
     link: "https://github.com/yagogutierrezvazquez/SuccessStreet",
-    image: placeholderImg
+    image: tfgImg
   }
 ];
 
@@ -58,11 +60,11 @@ const tools = [
       <article class="group relative bg-white/2 border border-white/10 rounded-sm overflow-hidden hover:border-green-500/30 transition-all duration-300 flex flex-col h-full hover:-translate-y-1">
         
         <a href={project.link} target="_blank" class="block overflow-hidden h-48 relative">
-          <div class="absolute inset-0 bg-green-500/10 group-hover:bg-transparent transition-colors z-10"></div>
-          <img 
+          <div class="absolute inset-0 bg-transparent group-hover:bg-green-500/10 transition-colors z-10"></div>
+          <Image 
             src={project.image} 
             alt={project.title} 
-            class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 grayscale group-hover:grayscale-0"
+            class="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-500 group-hover:grayscale-0"
           />
         </a>
 
