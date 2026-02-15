@@ -1,35 +1,33 @@
 ---
 /**
- * @component About.astro
- * @description "Whoami" section featuring a biographical summary and a profile avatar.
- * Uses a responsive layout strategy to optimize visual hierarchy across devices.
- * @dependencies Requires 'src/assets/images/profile.png' to exist.
+ * @component About
+ * @description "Whoami" biographical section. 
+ * Combines localized narrative content with a styled profile avatar.
+ * Uses 'set:html' to render enriched text (bolding/colors) from the i18n dictionary.
  */
 import profileImg from '../../assets/images/profile.png';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+// --- I18N SETUP ---
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <section id="about" class="py-24 max-w-4xl mx-auto px-6 border-t border-white/5">
   
   <h2 class="text-xl md:text-3xl font-mono font-bold text-green-500 mb-12 uppercase tracking-tighter">
-    > Whoami
+    > {t('about.title')}
   </h2>
 
   <div class="flex flex-col-reverse md:flex-row items-center gap-12">
     
     <div class="flex-1 text-gray-400 leading-relaxed font-light text-base">
-      
-      <p class="mb-6">
-        I started my journey into IT at 15, tinkering with microcomputer systems and networks. Curiosity led me to Web Development, but I quickly realized that my true endgame was <strong class="text-white font-normal">Cybersecurity</strong>.
-      </p>
-
-      <p class="mb-6">
-        Now at 20, I focus heavily on the <strong class="text-green-500 font-normal">Red Team</strong> side of operations. I thrive on the thrill of solving complex puzzles and understanding how systems break, though I also deeply enjoy the defensive strategy of Blue Teaming.
-      </p>
-
-      <p>
-        Offline, I keep it simple. You’ll find me grinding video games (like the one in my picture), going to the gym, or spending quality time with my partner and friends. I’m just a guy who loves to learn, explore, and occasionally break things—ethically, of course.
-      </p>
-
+      {/* Using set:html to inject formatted strings from the dictionary. 
+          This allows <strong> tags and Tailwind color classes to be rendered.
+      */}
+      <p class="mb-6" set:html={t('about.p1')} />
+      <p class="mb-6" set:html={t('about.p2')} />
+      <p set:html={t('about.p3')} />
     </div>
 
     <div class="relative group shrink-0">
@@ -39,7 +37,7 @@ import profileImg from '../../assets/images/profile.png';
       <div class="relative w-56 h-56 md:w-80 md:h-80 rounded-full overflow-hidden border-2 border-white/10 bg-brand-bg">
         <img 
           src={profileImg.src} 
-          alt="Avatar" 
+          alt="Yago Gutiérrez Avatar" 
           class="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
         />
       </div>

@@ -1,17 +1,20 @@
 ---
 /**
- * @component Hero.astro
- * @description The main landing section of the portfolio. 
- * Features a high-impact introduction, CV download, and an interactive 
- * "hacker-style" email reveal effect.
- * * @dependencies Requires 'public/cv.pdf' to be present for the download button.
+ * @component Hero
+ * @description The landing gateway of the portfolio. 
+ * Provides a high-impact visual summary of the professional profile, 
+ * social links, and a gamified contact interaction.
  */
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 
-// --- CONFIGURATION ---
+// --- I18N SETUP ---
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// --- PROFESSIONAL CONFIGURATION ---
 const personalInfo = {
   name: "Yago Gutiérrez",
-  role: "Cybersecurity Specialist",
-  // Update these URLs with your actual profile links
+  role: t('hero.role'),
   linkedin: "https://www.linkedin.com/in/yagogutierrezvazquez",
   github: "https://github.com/yagogutierrezvazquez",
   email: "personal-contact@yagog.dev", 
@@ -26,7 +29,7 @@ const personalInfo = {
   
   <p class="text-gray-400 max-w-2xl text-lg md:text-xl font-light leading-relaxed mb-10">
     {personalInfo.role}<br> 
-    Focused on solving complex challenges and developing secure software.
+    {t('hero.description')}
   </p>
 
   <div class="flex flex-col md:flex-row items-center gap-6">
@@ -39,7 +42,7 @@ const personalInfo = {
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
       </svg>
-      <span>Download CV</span>
+      <span>{t('hero.cv')}</span>
     </a>
 
     <div class="hidden md:block w-px h-8 bg-white/20"></div>
@@ -75,7 +78,10 @@ const personalInfo = {
 </section>
 
 <script>
-  // Character set for the "hacker" effect
+  /**
+   * HACKER STYLE DECRYPTION EFFECT
+   * Simulates a character-by-character decryption on hover for the email field.
+   */
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
   let interval: any = null;
 
@@ -84,7 +90,7 @@ const personalInfo = {
 
   if (emailElement) {
     
-    // Event: Trigger decryption animation on hover
+    // Trigger decryption animation
     emailElement.onmouseover = (event: any) => {  
       let iteration = 0;
       const targetText = event.target.dataset.value;
@@ -95,26 +101,22 @@ const personalInfo = {
         event.target.innerText = targetText
           .split("")
           .map((letter: string, index: number) => {
-            // Return actual character if we've passed the iteration point
             if(index < iteration) {
               return targetText[index];
             }
-            // Return random character otherwise
             return letters[Math.floor(Math.random() * 26)];
           })
           .join("");
         
-        // Stop animation when full text is revealed
         if(iteration >= targetText.length){ 
           clearInterval(interval);
         }
         
-        // Controls the speed of decryption (higher denominator = slower)
         iteration += 2 / 3; 
       }, 30);
     };
 
-    // Event: Reset to encrypted state when mouse leaves
+    // Reset to encrypted placeholder
     emailElement.onmouseleave = (event: any) => {
       clearInterval(interval);
       event.target.innerText = originalText;
