@@ -1,64 +1,60 @@
 ---
 /**
- * @component BaseLayout
- * @description The core HTML shell for all pages. 
- * Handles SEO meta tags, i18n language attributes, and global styles.
+ * @page All Certificates (EN)
  */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { certificates } from '../data/certificates';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
-
-interface Props {
-  title?: string;
-  description?: string;
-}
-
-const { title, description } = Astro.props;
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-// SEO Configuration
-const metaTitle = title ? `${title} | Yago Gutiérrez` : "Yago Gutiérrez | Cybersecurity Portfolio";
-const metaDesc = description || t('hero.description'); // Fallback to hero description if not provided
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-
-// Hreflang logic for SEO
-const alternateLang = lang === 'en' ? 'es' : 'en';
-const alternateURL = new URL(
-  lang === 'en' ? `/es${Astro.url.pathname}` : Astro.url.pathname.replace('/es', ''),
-  Astro.site
-);
+const translateDate = (dateStr: string) => {
+  const [month, year] = dateStr.split(' ');
+  return `${t(`month.${month}` as any)} ${year}`;
+};
 ---
 
-<!DOCTYPE html>
-<html lang={lang} class="scroll-smooth">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
+<BaseLayout title="Certificates List">
+  <div style="position: relative; z-index: 1; padding-top: 150px; background-color: #0a0a0a; min-height: 100vh;">
+    <div class="max-w-6xl mx-auto px-6 pb-24">
+      
+      <div class="mb-12">
+        <a href="/#certificates" class="inline-flex items-center gap-2 text-sm font-mono text-gray-500 hover:text-green-500 transition-colors mb-4">
+            <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+            {t('certs.page.back')}
+        </a>
+        
+        <h1 class="text-4xl md:text-5xl font-bold text-white font-mono tracking-tighter uppercase">
+          {t('certs.page.title_white')} <span class="text-green-500">{t('certs.page.title_green')}</span>
+        </h1>
+        <p class="text-gray-400 mt-2 max-w-xl">
+          {t('certs.page.description')}
+        </p>
+      </div>
 
-    <title>{metaTitle}</title>
-    <meta name="title" content={metaTitle} />
-    <meta name="description" content={metaDesc} />
-    <link rel="canonical" href={canonicalURL} />
-
-    <link rel="alternate" hreflang={lang} href={canonicalURL} />
-    <link rel="alternate" hreflang={alternateLang} href={alternateURL} />
-    <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site)} />
-
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url} />
-    <meta property="og:title" content={metaTitle} />
-    <meta property="og:description" content={metaDesc} />
-    <meta property="og:image" content={new URL('/og-image.png', Astro.url)} />
-
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={Astro.url} />
-    <meta property="twitter:title" content={metaTitle} />
-    <meta property="twitter:description" content={metaDesc} />
-    <meta property="twitter:image" content={new URL('/og-image.png', Astro.url)} />
-  </head>
-  <body class="bg-brand-bg text-white selection:bg-green-500/30 selection:text-green-500">
-    <slot />
-  </body>
-</html>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {certificates.map((cert) => (
+          <a href={cert.url} target="_blank" rel="noopener noreferrer" class="group relative bg-[#111] border border-white/10 p-6 rounded-sm hover:border-green-500/50 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
+            <div class="flex-1">
+              <div class="h-14 w-14 mb-5 p-2 bg-white/5 rounded-sm group-hover:bg-white/10 transition-colors">
+                <img src={cert.image} alt={cert.name} class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity" loading="lazy" />
+              </div>
+              <h3 class="text-lg font-bold text-white leading-tight mb-2 group-hover:text-green-400 transition-colors">
+                {cert.name}
+              </h3>
+              <p class="text-sm text-gray-400 font-mono">{cert.issuer}</p>
+            </div>
+            <div class="mt-6 border-t border-white/5 pt-4">
+              <p class="text-xs text-gray-600 font-mono uppercase tracking-wide">
+                {t('certs.issued')}: {translateDate(cert.date)}
+              </p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</BaseLayout>
