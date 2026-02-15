@@ -1,0 +1,93 @@
+---
+/**
+ * @page WriteupPost
+ * @description Dynamic page template for individual Writeups.
+ * Renders the Markdown content for a specific CTF report based on its slug.
+ */
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getLangFromUrl } from '../../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+// --- STATIC PATHS GENERATION ---
+// Generates a static route for every markdown file found in src/content/writeups
+export async function getStaticPaths() {
+  const writeups = await getCollection('writeups');
+  return writeups.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+// --- DATA: RENDER CONTENT ---
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+// --- UTILS: UI HELPERS ---
+const getDifficultyColor = (diff: string) => {
+  switch(diff) {
+    case 'Easy': return 'text-green-500';
+    case 'Medium': return 'text-yellow-500';
+    case 'Hard': return 'text-red-500';
+    case 'Insane': return 'text-purple-500';
+    default: return 'text-gray-500';
+  }
+};
+---
+
+<BaseLayout title={`${entry.data.title} | Yago Gutiérrez`}>
+  <div class="min-h-screen bg-[#0a0a0a] pb-24">
+    
+    <div class="h-24"></div>
+
+    <div class="max-w-4xl mx-auto px-6 mb-8">
+      <a href="/#writeups" class="inline-flex items-center gap-2 text-sm font-mono text-gray-500 hover:text-green-500 transition-colors">
+        <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+        cd ..
+      </a>
+    </div>
+
+    <header class="max-w-4xl mx-auto px-6 mb-12 border-b border-white/10 pb-12">
+      
+      <div class="flex items-center gap-4 text-xs font-mono text-gray-500 mb-4">
+        <span>{entry.data.date.toISOString().split('T')[0]}</span>
+        <span class="text-green-500">/</span>
+        <span class="uppercase">Log: {entry.slug}</span>
+      </div>
+
+      <h1 class="text-3xl md:text-5xl font-bold text-white mb-6 tracking-tight">
+        {entry.data.title}
+      </h1>
+
+      <div class="flex flex-wrap gap-4 items-center">
+        <span class="bg-white/5 border border-white/10 px-3 py-1 rounded-sm text-sm text-gray-300 font-mono">
+          Host: {entry.data.platform}
+        </span>
+        
+        <span class={`font-mono font-bold text-sm ${getDifficultyColor(entry.data.difficulty)}`}>
+          Diff: [{entry.data.difficulty.toUpperCase()}]
+        </span>
+
+        <div class="flex gap-2 ml-auto">
+          {entry.data.tags.map((tag: string) => (
+            <span class="text-xs text-gray-600 font-mono">#{tag}</span>
+          ))}
+        </div>
+      </div>
+    </header>
+
+    <article class="max-w-4xl mx-auto px-6">
+      <div class="prose prose-invert prose-green prose-lg max-w-none 
+        prose-headings:font-mono prose-headings:text-white 
+        prose-pre:bg-[#111] prose-pre:border prose-pre:border-white/10 prose-pre:rounded-sm
+        prose-code:text-green-400 prose-code:bg-white/5 prose-code:px-1 prose-code:rounded-sm prose-code:before:content-none prose-code:after:content-none"
+      >
+        <Content />
+      </div>
+    </article>
+
+  </div>
+</BaseLayout>

@@ -1,0 +1,43 @@
+---
+/**
+ * @page Home
+ * @description Main landing page of the portfolio.
+ * Assembles all the individual sections into a single-page scrolling experience.
+ */
+
+// --- LAYOUT ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// --- SECTIONS ---
+import Hero from '../components/sections/Hero.astro';
+import Experience from '../components/sections/Experience.astro';
+import Certificates from '../components/sections/Certificates.astro';
+import About from '../components/sections/About.astro';
+import Stack from '../components/sections/Stack.astro';
+import Projects from '../components/sections/Projects.astro';
+import Writeups from '../components/sections/Writeups.astro';
+import Footer from '../components/sections/Footer.astro';
+---
+
+<BaseLayout title="PortfolioWeb">
+  <main>
+    <Hero />
+    <Experience />
+    <Certificates />
+    <About />
+    <Stack />
+    <Projects />
+    <Writeups />
+    <Footer />
+
+    <!-- {remainingPlaceholders.map((section) => (
+      <section id={section.id} class="min-h-[50vh] flex flex-col items-center justify-center border-t border-white/5 px-6">
+        <h2 class="text-3xl font-mono font-bold text-green-500 uppercase tracking-tighter">
+          > {section.title}
+        </h2>
+        <p class="text-gray-600 italic mt-4">// Coming soon...</p>
+      </section>
+    ))}  -->
+
+  </main>
+</BaseLayout>
