@@ -5,9 +5,14 @@
  * Features:
  * - Native HTML Accordion (<details>) for collapsible sections.
  * - Interactive Tooltips on hover using group/peer CSS logic.
- * - Optimized asset loading via Astro <Image />.
+ * - Optimized asset loading via Astro <Image /> component.
  */
 import { Image } from 'astro:assets';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+// --- I18N SETUP ---
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 // --- ASSETS: CYBERSECURITY ARSENAL ---
 import bash from '../../assets/images/stack/cyber/bash.png';
@@ -41,7 +46,7 @@ import vscode from '../../assets/images/stack/devweb/vscode.png';
 // --- CONFIGURATION ---
 const stack = [
   {
-    category: "Cybersecurity_Arsenal",
+    category: t('stack.arsenal'),
     id: "cyber",
     items: [
       { name: "Kali Linux", icon: kali },
@@ -59,7 +64,7 @@ const stack = [
     ]
   },
   {
-    category: "Full_Stack_Dev",
+    category: t('stack.dev'), // Applied translation key
     id: "dev",
     items: [
       { name: "Java", icon: java },
@@ -83,16 +88,15 @@ const stack = [
 <section id="stack" class="py-24 max-w-4xl mx-auto px-6 w-full border-t border-white/5">
   
   <h2 class="text-2xl md:text-3xl font-mono font-bold text-green-500 mb-8 md:mb-12 uppercase tracking-tighter">
-    > Developer_Stack
+    > {t('stack.title')}
   </h2>
 
   <div class="space-y-4">
     {stack.map((group) => (
-      /* * Native Accordion (<details>)
-       * 'open' attribute logic: Keeps the 'cyber' section open by default.
-       * 'group' class allows styling the arrow icon based on open/closed state.
-       */
-      <details class="group border border-white/10 bg-brand-bg rounded-sm open:bg-white/5 transition-colors duration-300" open={group.id === 'cyber'}>
+      <details 
+        class="group border border-white/10 bg-brand-bg rounded-sm open:bg-white/5 transition-colors duration-300" 
+        open={group.id === 'cyber'}
+      >
         
         <summary class="flex items-center justify-between p-6 cursor-pointer list-none select-none">
           <div class="flex items-center gap-4">

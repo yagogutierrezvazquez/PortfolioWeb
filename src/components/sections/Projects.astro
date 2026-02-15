@@ -6,27 +6,31 @@
  * 2. Tools & Scripts: List layout with terminal aesthetics (Cybersecurity/CLI).
  */
 import { Image } from 'astro:assets';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+// --- I18N SETUP ---
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 // --- ASSETS: IMPORTS ---
 import portfolioImg from '../../assets/images/projects/portfolioweb.png';
 import tfgImg from '../../assets/images/projects/successstreet.png';
 
-
 // --- DATA: MAIN PROJECTS (WEB/FULLSTACK) ---
 const projects = [
   {
-    title: "Secured Portfolio V1",
-    status: "Live",
+    title: t('projects.v1.title'),
+    status: t('projects.status.live'),
     tech: ["Astro", "Tailwind", "TypeScript"],
-    description: "Personal folio built with performance and security in mind. Features strict content security policies, zero-js runtime (mostly), and accessible architecture.",
+    description: t('projects.v1.desc'),
     link: "https://github.com/yagogutierrezvazquez/PortfolioWeb",
     image: portfolioImg
   },
   {
-    title: "Degree Final Project (TFG)",
-    status: "Archived",
+    title: t('projects.tfg.title'),
+    status: t('projects.status.archived'),
     tech: ["Angular", "NodeJS", "Bootstrap"],
-    description: "Full-stack web application developed for the Higher Technician degree. Implements complex data relationships, user authentication flows, and responsive UI design.",
+    description: t('projects.tfg.desc'),
     link: "https://github.com/yagogutierrezvazquez/SuccessStreet",
     image: tfgImg
   }
@@ -35,14 +39,14 @@ const projects = [
 // --- DATA: TOOLS & SCRIPTS (CLI/CYBER) ---
 const tools = [
   {
-    title: "Python Port Scanner (Placeholder)",
-    description: "Multi-threaded CLI tool for fast port scanning. Faster than standard Nmap scans for specific subnets.",
+    title: t('projects.tool1.title'),
+    description: t('projects.tool1.desc'),
     tech: ["Python", "Socket", "CLI"],
     link: "#" 
   },
   {
-    title: "Automated Recon Script (Placeholder)",
-    description: "Bash script wrapper that automates subdomain enumeration and directory brute-forcing for CTFs.",
+    title: t('projects.tool2.title'),
+    description: t('projects.tool2.desc'),
     tech: ["Bash", "Recon", "Automation"],
     link: "#" 
   }
@@ -52,7 +56,7 @@ const tools = [
 <section id="projects" class="py-24 max-w-4xl mx-auto px-6 w-full border-t border-white/5">
   
   <h2 class="text-2xl md:text-3xl font-mono font-bold text-green-500 mb-8 md:mb-12 uppercase tracking-tighter">
-    > Featured_Projects
+    > {t('projects.title')}
   </h2>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -94,51 +98,9 @@ const tools = [
     ))}
   </div>
   
-  <!-- <div class="w-full">
-    <div class="flex flex-col gap-4">
-      {tools.map((tool) => (
-        <a 
-          href={tool.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="group relative flex flex-col md:flex-row items-start md:items-center justify-between bg-white/2 border border-white/10 p-5 rounded-sm hover:border-green-500/50 hover:bg-[#111] transition-all duration-300"
-        >
-          <div class="absolute left-0 top-0 bottom-0 w-1 bg-green-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-
-          <div class="flex items-start gap-4 mb-4 md:mb-0">
-            <div class="mt-1 p-2 bg-white/5 rounded text-green-500 group-hover:text-white transition-colors">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-            </div>
-
-            <div>
-              <h4 class="text-lg font-bold text-gray-200 group-hover:text-green-400 transition-colors">
-                {tool.title}
-              </h4>
-              <p class="text-sm text-gray-500 mt-1 max-w-xl group-hover:text-gray-400">
-                {tool.description}
-              </p>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
-            <div class="flex gap-2">
-              {tool.tech.map((tag) => (
-                <span class="text-xs font-mono text-gray-500 border border-white/5 px-2 py-1 rounded bg-white/2">
-                  {tag}
-                </span>
-              ))}
-            </div>
-            
-            <svg class="w-5 h-5 text-gray-600 group-hover:text-green-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-          </div>
-        </a>
-      ))}
-    </div>
-  </div> -->
-
   <div class="mb-6 text-center pt-12">
     <a href="https://github.com/yagogutierrezvazquez" target="_blank" class="text-gray-500 hover:text-green-500 font-mono text-sm transition-colors inline-flex items-center gap-2">
-      View more on GitHub
+      {t('projects.more')}
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
     </a>
   </div>

@@ -7,6 +7,14 @@
  * - Terminal-style command execution for contact action.
  * - Network port metaphor for social links (SSH/SSL).
  */
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+// --- I18N SETUP ---
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const APP_VERSION = "1.1";
+const BUILD_TAG = "stable";
 const year = new Date().getFullYear();
 ---
 
@@ -25,7 +33,7 @@ const year = new Date().getFullYear();
       <div class="text-xs text-green-500/60 space-y-1 font-mono">
         <div class="flex items-center gap-2">
           <span class="w-2 h-2 bg-green-500 rounded-full animate-ping"></span>
-          <span class="text-green-400 font-bold">SYSTEM_ONLINE</span>
+          <span class="text-green-400 font-bold">{t('footer.status')}</span>
         </div>
         <p>UPTIME: 99.98%</p>
         
@@ -33,13 +41,13 @@ const year = new Date().getFullYear();
           MEM: <span id="sys-mem" class="text-green-300 font-bold">CALCULATING...</span>
         </p>
         
-        <p>KERNEL: v.{year}.0.1-alpha</p>
-        <p class="mt-4 opacity-50">LOCATION: SPAIN (ES)</p>
+        <p>KERNEL: v.{APP_VERSION}-{BUILD_TAG}</p>
+        <p class="mt-4 opacity-50">{t('footer.location')}</p>
       </div>
 
       <div class="flex flex-col items-center">
         <div class="w-full max-w-sm">
-          <p class="text-green-500/80 text-xs mb-2 pl-1">> Execute Protocol:</p>
+          <p class="text-green-500/80 text-xs mb-2 pl-1">> {t('footer.protocol')}:</p>
           
           <a 
             href="mailto:personal-contact@yagog.dev"
@@ -47,7 +55,7 @@ const year = new Date().getFullYear();
           >
             <div class="flex justify-between items-center">
               <span class="text-lg font-bold group-hover:tracking-widest transition-all">
-                <span class="text-white opacity-50 mr-2">$</span>sudo ./email_me
+                <span class="text-white opacity-50 mr-2">$</span>{t('footer.email_cmd')}
               </span>
               <span class="animate-pulse">_</span>
             </div>
@@ -56,7 +64,7 @@ const year = new Date().getFullYear();
       </div>
 
       <div class="flex flex-col md:items-end">
-        <p class="text-green-500/60 text-xs mb-3 uppercase tracking-widest">Open_Ports (Netstat)</p>
+        <p class="text-green-500/60 text-xs mb-3 uppercase tracking-widest">{t('footer.ports')}</p>
         
         <div class="flex gap-4">
           
@@ -81,7 +89,7 @@ const year = new Date().getFullYear();
     </div>
 
     <div class="mt-12 border-t border-green-500/20 pt-4 flex justify-between text-[10px] text-green-500/40 uppercase">
-      <span>session_id: {Math.random().toString(36).substr(2, 9)}</span>
+      <span>{t('footer.session')}: {Math.random().toString(36).substr(2, 9)}</span>
       <span>© {year} Yago Gutiérrez // EOF</span>
     </div>
 
@@ -95,26 +103,18 @@ const year = new Date().getFullYear();
    */
   const memText = document.getElementById('sys-mem');
   const sysBar = document.getElementById('sys-bar');
-  const totalMem = 16; // Total RAM in GB
+  const totalMem = 16; 
 
   function updateSystemResources() {
     if (!memText || !sysBar) return;
 
-    // Generate random usage between 4GB and 13GB
     const usedMem = (Math.random() * (13 - 4) + 4).toFixed(2);
     const percentage = (parseFloat(usedMem) / totalMem) * 100;
 
-    // Update Text Display
     memText.innerText = `${usedMem}GB / ${totalMem}GB`;
-    
-    // Update Progress Bar Width
     sysBar.style.width = `${percentage}%`;
   }
 
-  // Initial call
   updateSystemResources();
-  
-  // Refresh interval (1.5s) to create dynamic "alive" feel
   setInterval(updateSystemResources, 1500);
-
 </script>

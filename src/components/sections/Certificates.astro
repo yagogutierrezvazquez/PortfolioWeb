@@ -2,10 +2,23 @@
 /**
  * @component Certificates.astro
  * @description Infinite Scrolling Carousel showing latest certifications.
- * Reads data from central store to ensure consistency with /certs page.
+ * Reads data from central store and applies i18n translations to dates.
  */
-
 import { certificates } from '../../data/certificates';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+// --- I18N SETUP ---
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+/**
+ * Helper to translate "Month YYYY" format
+ * Expects cert.date to be in "MM YYYY" format (e.g., "03 2024")
+ */
+const translateDate = (dateStr: string) => {
+  const [month, year] = dateStr.split(' ');
+  return `${t(`month.${month}` as any)} ${year}`;
+};
 
 // Duplicate array for infinite loop illusion
 const allCertificates = [...certificates, ...certificates];
@@ -14,11 +27,10 @@ const allCertificates = [...certificates, ...certificates];
 <section id="certificates" class="py-24 max-w-4xl mx-auto px-6 border-t border-white/5 relative overflow-hidden">
   
   <h2 class="text-xl md:text-3xl font-mono font-bold text-green-500 mb-12 uppercase tracking-tighter">
-    > Certified_Credentials
+    > {t('certs.title')}
   </h2>
 
   <div class="relative w-full mask-[linear-gradient(to_right,transparent_0,black_128px,black_calc(100%-128px),transparent_100%)]">
-    
     <div class="flex gap-6 w-max animate-infinite-scroll hover:[animation-play-state:paused]">
       {allCertificates.map((cert) => (
         <a 
@@ -39,12 +51,13 @@ const allCertificates = [...certificates, ...certificates];
                 {cert.name}
               </h3>
             </div>
-
             <p class="text-xs text-gray-400 font-mono mt-2">{cert.issuer}</p>
           </div>
 
           <div class="mt-4 border-t border-white/5 pt-4">
-            <p class="text-[10px] text-gray-600 font-mono uppercase tracking-wide">Issued: {cert.date}</p>
+            <p class="text-[10px] text-gray-600 font-mono uppercase tracking-wide">
+              {t('certs.issued')}: {translateDate(cert.date)}
+            </p>
           </div>
 
           <div class="absolute top-4 right-4 text-gray-600 group-hover:text-green-500 transition-colors">
@@ -56,12 +69,11 @@ const allCertificates = [...certificates, ...certificates];
   </div>
 
   <div class="mt-12 text-center">
-    <a href="/certs" class="inline-flex items-center gap-2 text-sm font-mono text-gray-400 hover:text-green-500 transition-colors border-b border-transparent hover:border-green-500 pb-1">
-      <span>View all certifications</span>
+    <a href={`/${lang}/certs`} class="inline-flex items-center gap-2 text-sm font-mono text-gray-400 hover:text-green-500 transition-colors border-b border-transparent hover:border-green-500 pb-1">
+      <span>{t('certs.viewAll')}</span>
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
     </a>
   </div>
-
 </section>
 
 <style>

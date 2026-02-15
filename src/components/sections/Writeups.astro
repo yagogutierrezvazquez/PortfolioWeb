@@ -6,6 +6,11 @@
  * and renders a responsive table-like list.
  */
 import { getCollection } from 'astro:content';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+// --- I18N SETUP ---
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 // --- DATA: FETCH & PROCESS ---
 const allWriteups = await getCollection('writeups');
@@ -20,7 +25,9 @@ const formatDate = (date: Date) => {
   return date.toISOString().split('T')[0];
 };
 
-// Returns color class based on CTF difficulty
+/**
+ * Returns color class based on CTF difficulty.
+ */
 const getDifficultyColor = (diff: string) => {
   switch(diff) {
     case 'Easy': return 'text-green-500';
@@ -36,20 +43,20 @@ const getDifficultyColor = (diff: string) => {
   
   <div class="flex items-center justify-between mb-6">
     <h2 class="text-2xl md:text-3xl font-mono font-bold text-green-500 mb-8 md:mb-12 uppercase tracking-tighter">
-      > Write_Ups
+      > {t('writeups.title')}
     </h2>
     <a href="/writeups" class="text-xs font-mono text-gray-500 hover:text-green-500 transition-colors">
-      [ View_All_Logs ]
+      {t('writeups.viewAll')}
     </a>
   </div>
 
   <div class="flex flex-col border border-white/10 bg-black rounded-sm overflow-hidden mb-6">
     
     <div class="hidden md:flex bg-white/5 border-b border-white/10 px-6 py-3 text-xs font-mono text-gray-500 uppercase tracking-wider">
-      <div class="w-32">Date</div>
-      <div class="w-32">Platform</div>
-      <div class="flex-1">Description / Title</div>
-      <div class="w-24 text-right">Difficulty</div>
+      <div class="w-32">{t('writeups.date')}</div>
+      <div class="w-32">{t('writeups.platform')}</div>
+      <div class="flex-1">{t('writeups.desc')}</div>
+      <div class="w-24 text-right">{t('writeups.diff')}</div>
     </div>
 
     {recentWriteups.map((post) => (
