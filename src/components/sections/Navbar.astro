@@ -1,7 +1,7 @@
 ---
 /**
  * @component Navbar
- * @description Sticky navigation bar with i18n support. 
+ * @description Sticky navigation bar with i18n support and Active Section Highlighting.
  * Features a dynamic language switcher (EN/ES) and a responsive mobile menu.
  */
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
@@ -12,27 +12,29 @@ const t = useTranslations(lang);
 
 /**
  * @method translatePath
- * @description Maps the current URL to its counterpart in another language.
- * Handles the transition between the root (EN) and the /es/ subdirectory.
+ * @description Maps the current URL to its counterpart in the target language.
+ * Handles the routing transition between the root (EN) and the /es/ subdirectory.
  */
 const translatePath = (targetLang: string) => {
   const path = Astro.url.pathname;
+
   if (lang === 'en') {
     return targetLang === 'es' ? `/es${path === '/' ? '' : path}` : path;
   }
+  
   const newPath = path.replace('/es', '');
   return targetLang === 'en' ? (newPath === '' ? '/' : newPath) : path;
 };
 
 // --- NAVIGATION CONFIGURATION ---
 const navItems = [
-  { name: t('nav.home'), url: `/${lang === 'en' ? '' : 'es'}#top` },
-  { name: t('nav.exp'), url: `/${lang === 'en' ? '' : 'es'}#experience` },
-  { name: t('nav.certs'), url: `/${lang === 'en' ? '' : 'es'}#certificates` },
-  { name: t('nav.about'), url: `/${lang === 'en' ? '' : 'es'}#about` },
-  { name: t('nav.stack'), url: `/${lang === 'en' ? '' : 'es'}#stack` },
-  { name: t('nav.projects'), url: `/${lang === 'en' ? '' : 'es'}#projects` },
-  { name: t('nav.writeups'), url: `/${lang === 'en' ? '' : 'es'}#writeups` },
+  { name: t('nav.home'), url: `/${lang === 'en' ? '' : 'es'}#hero`, id: 'hero' },
+  { name: t('nav.exp'), url: `/${lang === 'en' ? '' : 'es'}#experience`, id: 'experience' },
+  { name: t('nav.certs'), url: `/${lang === 'en' ? '' : 'es'}#certificates`, id: 'certificates' },
+  { name: t('nav.about'), url: `/${lang === 'en' ? '' : 'es'}#about`, id: 'about' },
+  { name: t('nav.stack'), url: `/${lang === 'en' ? '' : 'es'}#stack`, id: 'stack' },
+  { name: t('nav.projects'), url: `/${lang === 'en' ? '' : 'es'}#projects`, id: 'projects' },
+  { name: t('nav.writeups'), url: `/${lang === 'en' ? '' : 'es'}#writeups`, id: 'writeups' },
 ];
 ---
 
@@ -45,7 +47,11 @@ const navItems = [
 
     <div class="hidden md:flex items-center gap-1">
       {navItems.map((item) => (
-        <a href={item.url} class="px-4 py-2 text-xs font-mono text-gray-400 hover:text-green-500 hover:bg-white/5 rounded-sm transition-all uppercase tracking-wider">
+        <a 
+          href={item.url} 
+          data-target={item.id}
+          class="nav-link px-4 py-2 text-xs font-mono text-gray-400 hover:text-green-500 hover:bg-white/5 rounded-sm transition-all uppercase tracking-wider"
+        >
           {item.name}
         </a>
       ))}
@@ -89,7 +95,11 @@ const navItems = [
   <div id="mobile-menu" class="hidden md:hidden bg-brand-bg border-b border-white/10 absolute w-full">
     <div class="flex flex-col p-4 space-y-2">
       {navItems.map((item) => (
-        <a href={item.url} class="block px-4 py-3 text-sm font-mono text-gray-400 hover:text-green-500 hover:bg-white/5 rounded-sm border-l-2 border-transparent hover:border-green-500 transition-all">
+        <a 
+          href={item.url} 
+          data-target={item.id}
+          class="nav-link block px-4 py-3 text-sm font-mono text-gray-400 hover:text-green-500 hover:bg-white/5 rounded-sm border-l-2 border-transparent hover:border-green-500 transition-all"
+        >
           > {item.name}
         </a>
       ))}
@@ -113,24 +123,66 @@ const navItems = [
 </nav>
 
 <script>
-  /**
-   * INTERACTIVE UI LOGIC
-   * Handles mobile menu visibility and auto-closing on navigation.
-   */
+  // --- MOBILE MENU LOGIC ---
   const btn = document.getElementById('mobile-menu-btn');
   const menu = document.getElementById('mobile-menu');
 
   if (btn && menu) {
-    // Toggle menu state
     btn.addEventListener('click', () => {
       menu.classList.toggle('hidden');
     });
 
-    // UX: Close menu automatically when a link is clicked
     menu.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         menu.classList.add('hidden');
       });
     });
   }
+
+  // --- SCROLLSPY LOGIC ---
+  const navLinks = document.querySelectorAll('.nav-link');
+  
+  // Extract target sections based on data attributes
+  const sections = Array.from(navLinks)
+    .map(link => {
+      const id = link.getAttribute('data-target');
+      return id ? document.getElementById(id) : null; 
+    })
+    .filter(section => section !== null);
+
+  function updateActiveLink() {
+    let currentSectionId = '';
+    
+    // Handle edge case: User has scrolled to the absolute bottom of the page
+    const isAtBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 10;
+    
+    if (isAtBottom && sections.length > 0) {
+      currentSectionId = sections[sections.length - 1].id;
+    } else {
+      // Calculate active section with a fixed offset for the sticky navbar
+      const scrollPosition = window.scrollY + 150;
+      
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        if (section.offsetTop <= scrollPosition) {
+          currentSectionId = section.id;
+          break; 
+        }
+      }
+    }
+
+    // Update UI state
+    navLinks.forEach(link => {
+      if (link.getAttribute('data-target') === currentSectionId) {
+        link.classList.add('text-green-500');
+        link.classList.remove('text-gray-400');
+      } else {
+        link.classList.remove('text-green-500');
+        link.classList.add('text-gray-400');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateActiveLink, { passive: true });
+  updateActiveLink(); // Initialize on load
 </script>
