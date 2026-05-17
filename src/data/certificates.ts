@@ -27,6 +27,13 @@ export const certificates: Certificate[] = [
     url: "https://certs.ine.com/9d7755f7-439e-41a6-a978-a8a60e59f65c#acc.fSDbtR1s" 
   },
   {
+    name: "CompTIA Security+ (SY0-701)",
+    issuer: "CompTIA",
+    date: "05 2026",
+    image: "/certificates/security-plus.png",
+    url: "https://www.credly.com/badges/e9025754-c3de-421f-98e5-169eb048f931/public_url"
+  },
+  {
     name: "IT Specialist - Cybersecurity",
     issuer: "Certiport (Pearson VUE)",
     date: "12 2025",
@@ -41,7 +48,7 @@ export const certificates: Certificate[] = [
     url: "https://www.credly.com/badges/ff2212c9-d406-4bad-a7d8-bbefe0e11360/public_url"
   },
   {
-    name: "Microsoft Certified: Security, Compliance, and Identity Fundamentals (SC-900)",
+    name: "Microsoft Certified: SC-900",
     issuer: "Microsoft",
     date: "12 2025",
     image: "/certificates/sc-900.png",
