@@ -10,6 +10,7 @@
 import { Image } from 'astro:assets';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 import { stackData } from '../../data/stack';
+import Section from '../ui/Section.astro';
 
 // --- I18N SETUP ---
 const lang = getLangFromUrl(Astro.url);
@@ -17,11 +18,7 @@ const t = useTranslations(lang);
 
 ---
 
-<section id="stack" class="pt-12 pb-20 md:py-24 max-w-4xl mx-auto px-6 w-full border-t border-white/5">
-  
-  <h2 class="text-2xl md:text-3xl font-mono font-bold text-green-500 mb-8 md:mb-12 uppercase tracking-tighter">
-    > {t('stack.title')}
-  </h2>
+<Section id="about" title={t('stack.title')}>
 
   <div class="space-y-4">
     {stackData.map((group) => (
@@ -76,4 +73,4 @@ const t = useTranslations(lang);
       </details>
     ))}
   </div>
-</section>
+</Section>

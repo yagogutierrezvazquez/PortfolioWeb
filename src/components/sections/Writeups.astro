@@ -7,6 +7,7 @@
  */
 import { getCollection } from 'astro:content';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import Section from '../ui/Section.astro';
 
 // --- I18N SETUP ---
 const lang = getLangFromUrl(Astro.url);
@@ -39,12 +40,9 @@ const getDifficultyColor = (diff: string) => {
 };
 ---
 
-<section id="writeups" class="pt-12 pb-20 md:py-24 max-w-4xl mx-auto px-6 w-full border-t border-white/5">
+<Section id="about" title={t('writeups.title')}>
   
   <div class="flex items-center justify-between mb-6">
-    <h2 class="text-2xl md:text-3xl font-mono font-bold text-green-500 mb-8 md:mb-12 uppercase tracking-tighter">
-      > {t('writeups.title')}
-    </h2>
     <a href="/writeups" class="text-xs font-mono text-gray-500 hover:text-green-500 transition-colors">
       {t('writeups.viewAll')}
     </a>
@@ -103,4 +101,4 @@ const getDifficultyColor = (diff: string) => {
     ))}
 
   </div>
-</section>
+</Section>

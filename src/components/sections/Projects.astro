@@ -6,6 +6,8 @@
 import { Image } from 'astro:assets';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 import { projectsData } from '../../data/projects';
+import Section from '../ui/Section.astro';
+import Badge from '../ui/Badge.astro';
 
 // --- I18N SETUP ---
 const lang = getLangFromUrl(Astro.url);
@@ -15,11 +17,7 @@ const t = useTranslations(lang);
 type TKey = Parameters<typeof t>[0];
 ---
 
-<section id="projects" class="pt-12 pb-20 md:py-24 max-w-4xl mx-auto px-6 w-full border-t border-white/5">
-  
-  <h2 class="text-2xl md:text-3xl font-mono font-bold text-green-500 mb-8 md:mb-12 uppercase tracking-tighter">
-    > {t('projects.title' as TKey)}
-  </h2>
+<Section id="about" title={t('projects.title')}>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
     {projectsData.map((project) => (
@@ -50,9 +48,7 @@ type TKey = Parameters<typeof t>[0];
 
           <div class="flex flex-wrap gap-2 mt-auto">
             {project.tech.map((techItem) => (
-              <span class="text-xs text-gray-500 font-mono bg-white/5 px-2 py-1 rounded-sm border border-white/5">
-                #{techItem}
-              </span>
+              <Badge text={techItem}/>
             ))}
           </div>
         </div>
@@ -67,4 +63,4 @@ type TKey = Parameters<typeof t>[0];
     </a>
   </div>
 
-</section>
+</Section>

@@ -8,6 +8,7 @@
 import { Image } from 'astro:assets';
 import { certificates } from '../../data/certificates';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import Section from '../ui/Section.astro';
 
 // --- I18N SETUP ---
 const lang = getLangFromUrl(Astro.url);
@@ -26,11 +27,7 @@ const translateDate = (dateStr: string) => {
 const allCertificates = [...certificates, ...certificates];
 ---
 
-<section id="certificates" class="pt-12 pb-20 md:py-24 max-w-4xl mx-auto px-6 border-t border-white/5 relative overflow-hidden">
-  
-  <h2 class="text-2xl md:text-3xl font-mono font-bold text-green-500 mb-8 md:mb-12 uppercase tracking-tighter">
-    > {t('certs.title')}
-  </h2>
+<Section id="certificates" title={t('certs.title')}>
 
   <div class="relative w-full mask-[linear-gradient(to_right,transparent_0,black_128px,black_calc(100%-128px),transparent_100%)]">
     <div class="flex gap-6 w-max animate-infinite-scroll hover:[animation-play-state:paused]">
@@ -81,7 +78,7 @@ const allCertificates = [...certificates, ...certificates];
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
     </a>
   </div>
-</section>
+</Section>
 
 <style>
   @keyframes infinite-scroll {

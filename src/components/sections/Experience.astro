@@ -5,6 +5,8 @@
  * Data is structured to allow easy addition of future roles with i18n support.
  */
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import Badge from '../ui/Badge.astro';
+import Section from '../ui/Section.astro';
 
 // --- I18N SETUP ---
 const lang = getLangFromUrl(Astro.url);
@@ -38,14 +40,9 @@ const experienceData: JobRole[] = [
 ];
 ---
 
-<section id="experience" class="pt-12 pb-20 md:py-24 max-w-4xl mx-auto px-6 w-full border-t border-white/5">
-  
-  <h2 class="text-2xl md:text-3xl font-mono font-bold text-green-500 mb-8 md:mb-12 uppercase tracking-tighter">
-    > {t('exp.title')}
-  </h2>
+<Section id="about" title={t('exp.title')}>
 
   <div class="relative border-l border-white/10 ml-3 md:ml-6 space-y-12">
-    
     {experienceData.map((job) => (
       <div class="relative pl-8 md:pl-12 group">
         
@@ -73,9 +70,7 @@ const experienceData: JobRole[] = [
         {job.techStack && (
           <div class="flex flex-wrap gap-2">
             {job.techStack.map((tech) => (
-              <span class="text-[10px] text-gray-600 font-mono bg-white/5 px-2 py-1 rounded-sm border border-transparent group-hover:border-white/10 transition-colors">
-                {tech}
-              </span>
+              <Badge text={tech}/>
             ))}
           </div>
         )}
@@ -89,5 +84,4 @@ const experienceData: JobRole[] = [
       {t('exp.cv.text')} <a href="/cv.pdf" download="Yago_Gutierrez_CV.pdf" class="text-green-500 hover:underline">{t('exp.cv.link')}</a>.
     </p>
   </div>
-
-</section>
+</Section>
