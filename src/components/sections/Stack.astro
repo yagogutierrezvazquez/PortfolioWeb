@@ -9,80 +9,12 @@
  */
 import { Image } from 'astro:assets';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import { stackData } from '../../data/stack';
 
 // --- I18N SETUP ---
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-// --- ASSETS: CYBERSECURITY ARSENAL ---
-import bash from '../../assets/images/stack/cyber/bash.png';
-import burp from '../../assets/images/stack/cyber/burp.png';
-import gobuster from '../../assets/images/stack/cyber/gobuster.svg';
-import hydra from '../../assets/images/stack/cyber/hydra.svg';
-import john from '../../assets/images/stack/cyber/johntheripper.png';
-import kali from '../../assets/images/stack/cyber/kali.png';
-import linux from '../../assets/images/stack/cyber/linux.png';
-import metasploit from '../../assets/images/stack/cyber/metasploit.png';
-import nessus from '../../assets/images/stack/cyber/nessus.png';
-import nmap from '../../assets/images/stack/cyber/nmap.png';
-import zap from '../../assets/images/stack/cyber/owaspzap.png';
-import wireshark from '../../assets/images/stack/cyber/wireshark.png';
-
-// --- ASSETS: WEB & DEVELOPMENT ---
-import astroLogo from '../../assets/images/stack/devweb/astro.png';
-import css from '../../assets/images/stack/devweb/css.png';
-import docker from '../../assets/images/stack/devweb/docker.png';
-import git from '../../assets/images/stack/devweb/git.png';
-import html from '../../assets/images/stack/devweb/html.png';
-import java from '../../assets/images/stack/devweb/java.png';
-import js from '../../assets/images/stack/devweb/javascript.svg';
-import postman from '../../assets/images/stack/devweb/postman.png';
-import react from '../../assets/images/stack/devweb/react.png';
-import spring from '../../assets/images/stack/devweb/spring-boot.png';
-import sql from '../../assets/images/stack/devweb/sql.png';
-import tailwind from '../../assets/images/stack/devweb/tailwind.png';
-import vscode from '../../assets/images/stack/devweb/vscode.png';
-
-// --- CONFIGURATION ---
-const stack = [
-  {
-    category: t('stack.arsenal'),
-    id: "cyber",
-    items: [
-      { name: "Kali Linux", icon: kali },
-      { name: "Burp Suite", icon: burp },
-      { name: "Metasploit", icon: metasploit },
-      { name: "Nmap", icon: nmap },
-      { name: "Wireshark", icon: wireshark },
-      { name: "Hydra", icon: hydra },
-      { name: "John the Ripper", icon: john },
-      { name: "Nessus", icon: nessus },
-      { name: "Gobuster", icon: gobuster },
-      { name: "OWASP ZAP", icon: zap },
-      { name: "Linux", icon: linux },
-      { name: "Bash Scripting", icon: bash },
-    ]
-  },
-  {
-    category: t('stack.dev'), 
-    id: "dev",
-    items: [
-      { name: "Java", icon: java },
-      { name: "Spring Boot", icon: spring },
-      { name: "HTML5", icon: html },
-      { name: "CSS3", icon: css },
-      { name: "JavaScript", icon: js },
-      { name: "SQL", icon: sql },
-      { name: "React", icon: react },
-      { name: "Astro", icon: astroLogo },
-      { name: "Tailwind CSS", icon: tailwind },
-      { name: "Git", icon: git },
-      { name: "Docker", icon: docker },
-      { name: "Postman", icon: postman },
-      { name: "VS Code", icon: vscode },
-    ]
-  }
-];
 ---
 
 <section id="stack" class="pt-12 pb-20 md:py-24 max-w-4xl mx-auto px-6 w-full border-t border-white/5">
@@ -92,7 +24,7 @@ const stack = [
   </h2>
 
   <div class="space-y-4">
-    {stack.map((group) => (
+    {stackData.map((group) => (
       <details 
         class="group border border-white/10 bg-brand-bg rounded-sm open:bg-white/5 transition-colors duration-300" 
         open={group.id === 'cyber'}
@@ -103,7 +35,7 @@ const stack = [
           <div class="flex items-center gap-2 md:gap-4">
             <span class="text-green-500 font-mono text-base md:text-lg font-bold">></span>
             <h3 class="text-base sm:text-lg md:text-xl font-bold font-mono text-gray-200 group-hover:text-white transition-colors break-words">
-              {group.category}
+              {t(group.categoryKey)}
             </h3>
           </div>
           
