@@ -4,6 +4,8 @@
  * @description Infinite Scrolling Carousel showing latest certifications.
  * Reads data from central store and applies i18n translations to dates.
  */
+
+import { Image } from 'astro:assets';
 import { certificates } from '../../data/certificates';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 
@@ -43,7 +45,12 @@ const allCertificates = [...certificates, ...certificates];
 
           <div class="flex-1 mb-4">
             <div class="h-14 w-14 mb-5 p-2 bg-white/5 rounded-sm group-hover:bg-white/10 transition-colors">
-              <img src={cert.image} alt={cert.name} class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity" loading="lazy" />
+              <Image 
+                src={cert.image} 
+                alt={cert.name}
+                inferSize={true}
+                class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity" 
+              />
             </div>
             
             <div class="min-h-14 flex items-center">

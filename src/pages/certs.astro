@@ -2,6 +2,8 @@
 /**
  * @page All Certificates (EN)
  */
+
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { certificates } from '../data/certificates';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
@@ -40,7 +42,11 @@ const translateDate = (dateStr: string) => {
           <a href={cert.url} target="_blank" rel="noopener noreferrer" class="group relative bg-[#111] border border-white/10 p-6 rounded-sm hover:border-green-500/50 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
             <div class="flex-1">
               <div class="h-14 w-14 mb-5 p-2 bg-white/5 rounded-sm group-hover:bg-white/10 transition-colors">
-                <img src={cert.image} alt={cert.name} class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity" loading="lazy" />
+                <Image 
+                  src={cert.image} 
+                  alt={cert.name} 
+                  class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                />
               </div>
               <h3 class="text-lg font-bold text-white leading-tight mb-2 group-hover:text-green-400 transition-colors">
                 {cert.name}

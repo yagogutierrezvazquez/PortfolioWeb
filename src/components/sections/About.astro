@@ -5,6 +5,8 @@
  * Combines localized narrative content with a styled profile avatar.
  * Uses 'set:html' to render enriched text (bolding/colors) from the i18n dictionary.
  */
+
+import { Image } from 'astro:assets';
 import profileImg from '../../assets/images/profile.png';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 
@@ -35,8 +37,8 @@ const t = useTranslations(lang);
       <div class="absolute -inset-1 bg-linear-to-r from-green-600 to-green-900 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
       
       <div class="relative w-56 h-56 md:w-80 md:h-80 rounded-full overflow-hidden border-2 border-white/10 bg-brand-bg">
-        <img 
-          src={profileImg.src} 
+        <Image 
+          src={profileImg} 
           alt="Yago Gutiérrez Avatar" 
           class="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
         />
