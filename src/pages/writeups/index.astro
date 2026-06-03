@@ -6,6 +6,11 @@
  */
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLangFromUrl, useTranslatedPath } from '../../i18n/utils';
+
+// --- I18N SETUP ---
+const lang = getLangFromUrl(Astro.url);
+const translatePath = useTranslatedPath(lang);
 
 // --- DATA: FETCH & SORT ---
 // Fetch all writeups without limit
@@ -37,7 +42,7 @@ const getDifficultyColor = (diff: string) => {
       
       <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <a href="/#writeups" class="inline-flex items-center gap-2 text-sm font-mono text-gray-500 hover:text-green-500 transition-colors mb-4">
+          <a href={translatePath('/#writeups')} class="inline-flex items-center gap-2 text-sm font-mono text-gray-500 hover:text-green-500 transition-colors mb-4">
             <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
@@ -65,7 +70,7 @@ const getDifficultyColor = (diff: string) => {
 
         {sortedWriteups.map((post) => (
           <a 
-            href={`/writeups/${post.slug}`} 
+            href={translatePath(`/writeups/${post.slug}`)} 
             class="group flex flex-col md:flex-row md:items-center px-6 py-4 md:py-3 border-b border-white/5 hover:bg-green-500/5 transition-colors cursor-pointer last:border-0"
           >
             <div class="flex md:hidden justify-between text-xs font-mono text-gray-500 mb-2">

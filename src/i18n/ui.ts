@@ -163,7 +163,7 @@ export const ui = {
     'exp.pulsia.role': 'Técnico de Sistemas Microinformáticos',
     'exp.pulsia.period': 'Marzo 2022 - Junio 2022',
     'exp.pulsia.desc': 'Formación en Centros de Trabajo (FCT). Centrado en mantenimiento de hardware, configuración de sistemas operativos, resolución de problemas de red y soporte técnico.',
-    'exp.cv.text': '// Para un desglose detallado, ',
+    'exp.cv.text': '// Para información más detallada, ',
     'exp.cv.link': 'descarga el CV',
 
     // Texto de la Sección Certificados

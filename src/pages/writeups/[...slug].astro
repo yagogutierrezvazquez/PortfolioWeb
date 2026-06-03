@@ -6,6 +6,11 @@
  */
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLangFromUrl, useTranslatedPath } from '../../i18n/utils';
+
+// --- I18N SETUP ---
+const lang = getLangFromUrl(Astro.url);
+const translatePath = useTranslatedPath(lang);
 
 // --- STATIC PATHS GENERATION ---
 // Generates a static route for every markdown file found in src/content/writeups
@@ -39,7 +44,7 @@ const getDifficultyColor = (diff: string) => {
     <div class="h-24"></div>
 
     <div class="max-w-4xl mx-auto px-6 mb-8">
-      <a href="/#writeups" class="inline-flex items-center gap-2 text-sm font-mono text-gray-500 hover:text-green-500 transition-colors">
+      <a href={translatePath('/#writeups')} class="inline-flex items-center gap-2 text-sm font-mono text-gray-500 hover:text-green-500 transition-colors">
         <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
