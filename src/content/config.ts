@@ -10,6 +10,7 @@ const writeups = defineCollection({
   type: 'content',
   schema: ({ image }) => z.object({
     title: z.string(),
+    description: z.string(), // Added for SEO injection
     platform: z.string(),
     date: z.date(),
     // Enforces specific difficulty levels to match CSS color mapping
@@ -21,4 +22,4 @@ const writeups = defineCollection({
 });
 
 // --- EXPORTS ---
-export const collections = { writeups };
+export const collections = { writeups };  

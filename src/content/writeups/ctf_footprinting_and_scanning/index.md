@@ -1,5 +1,6 @@
 ---
 title: "Service Enumeration & Misconfiguration"
+description: "Description."
 date: 2025-10-01
 platform: "INE Labs"
 difficulty: "Easy"

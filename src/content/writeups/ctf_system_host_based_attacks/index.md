@@ -1,5 +1,6 @@
 ---
 title: "System & Host Based Attacks"
+description: "Description."
 date: 2025-11-01
 platform: "INE Labs"
 difficulty: "Medium"
