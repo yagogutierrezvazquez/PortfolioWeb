@@ -12,3 +12,8 @@
   background-color: var(--color-brand-bg);
   color: white;
 }
+
+/* Outline for debugging */
+/* * {
+  outline: 1px solid red !important;
+}*/
