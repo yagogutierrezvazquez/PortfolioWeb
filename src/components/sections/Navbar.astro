@@ -27,14 +27,29 @@ const translatePath = (targetLang: string) => {
 };
 
 // --- NAVIGATION CONFIGURATION ---
+// 1. Normalize path to prevent trailing slash mismatches
+const currentPath = Astro.url.pathname;
+const normalizedPath = currentPath.endsWith('/') && currentPath.length > 1 
+  ? currentPath.slice(0, -1) 
+  : currentPath;
+
+// 2. Check if the user is currently on the homepage (EN or ES)
+const isHome = normalizedPath === '/' || normalizedPath === '/es';
+
+// 3. Output relative hashes if on home (enables smooth scroll), or absolute paths if on subpages
+const getNavUrl = (id: string) => {
+  if (isHome) return `#${id}`;
+  return lang === 'en' ? `/#${id}` : `/es/#${id}`;
+};
+
 const navItems = [
-  { name: t('nav.home'), url: `/${lang === 'en' ? '' : 'es'}#hero`, id: 'hero' },
-  { name: t('nav.exp'), url: `/${lang === 'en' ? '' : 'es'}#experience`, id: 'experience' },
-  { name: t('nav.certs'), url: `/${lang === 'en' ? '' : 'es'}#certificates`, id: 'certificates' },
-  { name: t('nav.about'), url: `/${lang === 'en' ? '' : 'es'}#about`, id: 'about' },
-  { name: t('nav.stack'), url: `/${lang === 'en' ? '' : 'es'}#stack`, id: 'stack' },
-  { name: t('nav.projects'), url: `/${lang === 'en' ? '' : 'es'}#projects`, id: 'projects' },
-  { name: t('nav.writeups'), url: `/${lang === 'en' ? '' : 'es'}#writeups`, id: 'writeups' },
+  { name: t('nav.home'), url: getNavUrl('hero'), id: 'hero' },
+  { name: t('nav.exp'), url: getNavUrl('experience'), id: 'experience' },
+  { name: t('nav.certs'), url: getNavUrl('certificates'), id: 'certificates' },
+  { name: t('nav.about'), url: getNavUrl('about'), id: 'about' },
+  { name: t('nav.stack'), url: getNavUrl('stack'), id: 'stack' },
+  { name: t('nav.projects'), url: getNavUrl('projects'), id: 'projects' },
+  { name: t('nav.writeups'), url: getNavUrl('writeups'), id: 'writeups' },
 ];
 ---
 
@@ -199,6 +214,17 @@ const navItems = [
       } else {
         link.classList.remove('text-green-500');
         link.classList.add('text-gray-400');
+      }
+    });
+
+    const flagImages = document.querySelectorAll('img[src*="/flags/"]');
+    flagImages.forEach(img => {
+      const langLink = img.closest('a');
+      if (langLink) {
+        // Strip any existing hash from the URL
+        const baseUrl = langLink.href.split('#')[0];
+        // Append the active section hash, or keep it clean if at the top
+        langLink.href = currentSectionId ? `${baseUrl}#${currentSectionId}` : baseUrl;
       }
     });
   }

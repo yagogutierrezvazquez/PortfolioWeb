@@ -14,6 +14,7 @@ import Section from '../ui/Section.astro';
 // --- I18N SETUP ---
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
 ---
 
 <Section id="about" title={t('about.title')}>
@@ -43,3 +44,36 @@ const t = useTranslations(lang);
 
   </div>
 </Section>
+
+<script>
+  /**
+   * Calculates the exact age down to the day and injects it into the DOM.
+   * This prevents the need for manual redeploys on birthdays.
+   */
+  function calculateAge(birthDateString: string) {
+    const today = new Date();
+    const birthDate = new Date(birthDateString);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    
+    // If the birthday hasn't happened yet this year, subtract 1
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  }
+
+  function injectAge() {
+    // Locates the span injected via the i18n dictionary (e.g., <span id="dynamic-age">20</span>)
+    const ageElement = document.getElementById('dynamic-age');
+    if (ageElement) {
+      ageElement.innerText = calculateAge('2005-03-26').toString();
+    }
+  }
+
+  // Run on initial load
+  injectAge();
+  
+  // Failsafe for Astro View Transitions (if enabled in the future)
+  document.addEventListener('astro:page-load', injectAge);
+</script>
