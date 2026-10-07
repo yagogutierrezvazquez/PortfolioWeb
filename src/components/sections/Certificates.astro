@@ -29,7 +29,7 @@ const allCertificates = [...certificates, ...certificates];
 
 <Section id="certificates" title={t('certs.title')}>
 
-  <div class="relative w-full mask-[linear-gradient(to_right,transparent_0,black_128px,black_calc(100%-128px),transparent_100%)]">
+  <div class="relative w-full overflow-hidden mask-[linear-gradient(to_right,transparent_0,black_128px,black_calc(100%-128px),transparent_100%)]">
     <div class="flex gap-6 w-max animate-infinite-scroll hover:[animation-play-state:paused]">
       {allCertificates.map((cert) => (
         <a 
