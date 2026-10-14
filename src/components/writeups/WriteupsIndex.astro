@@ -2,7 +2,8 @@
 /**
  * @component WriteupsIndex
  * @description Full archive view for all CTF writeups and security reports.
- * Displays every entry in 'src/content/writeups' sorted by date (newest first).
+ * Entries are sorted by date (newest first) and grouped into numbered pages of
+ * WRITEUPS_PER_PAGE, displayed as a horizontal slider (buttons, arrows, swipe).
  * Rendered by both /writeups (EN) and /es/writeups (ES).
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -15,8 +16,17 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
-// --- DATA: FETCH & SORT ---
+// --- CONFIGURATION ---
+const WRITEUPS_PER_PAGE = 7;
+
+// --- DATA: FETCH, SORT & PAGINATE ---
 const sortedWriteups = await getSortedWriteups();
+const pages = Array.from(
+  { length: Math.ceil(sortedWriteups.length / WRITEUPS_PER_PAGE) },
+  (_, i) => sortedWriteups.slice(i * WRITEUPS_PER_PAGE, (i + 1) * WRITEUPS_PER_PAGE)
+);
+
+const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
 <BaseLayout title={t('writeups.page.title')}>
@@ -44,8 +54,121 @@ const sortedWriteups = await getSortedWriteups();
         </div>
       </div>
 
-      <WriteupsTable writeups={sortedWriteups} />
+      <div id="writeups-slider" class="overflow-hidden transition-[height] duration-500 ease-out">
+        <div data-track class="flex items-start transition-transform duration-500 ease-out">
+          {pages.map((page, i) => (
+            <div data-slide class="w-full shrink-0" inert={i !== 0}>
+              <WriteupsTable writeups={page} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {pages.length > 1 && (
+        <nav aria-label={t('writeups.pagination')} class="mt-8 flex items-center justify-center gap-2 font-mono text-sm">
+          <button
+            type="button"
+            data-prev
+            aria-label={t('writeups.prev')}
+            class="px-3 py-2 text-gray-500 hover:text-green-500 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+          >
+            &lt;
+          </button>
+
+          {pages.map((_, i) => (
+            <button
+              type="button"
+              data-page={i}
+              aria-label={`${t('writeups.goto')} ${i + 1}`}
+              aria-current={i === 0 ? 'page' : undefined}
+              class="px-3 py-2 border rounded-sm transition-colors border-white/10 text-gray-500 hover:text-green-500 hover:border-green-500/30 aria-[current=page]:border-green-500 aria-[current=page]:text-green-500 aria-[current=page]:bg-green-500/5"
+            >
+              [{pad(i + 1)}]
+            </button>
+          ))}
+
+          <button
+            type="button"
+            data-next
+            aria-label={t('writeups.next')}
+            class="px-3 py-2 text-gray-500 hover:text-green-500 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+          >
+            &gt;
+          </button>
+        </nav>
+      )}
 
     </div>
   </div>
 </BaseLayout>
+
+<script>
+  /**
+   * WRITEUPS SLIDER
+   * Slides between pre-rendered pages, syncing the active page with `?page=N`
+   * so the browser "back" button returns to the same page after opening a writeup.
+   */
+  const slider = document.getElementById('writeups-slider');
+  const track = slider?.querySelector<HTMLElement>('[data-track]');
+  const slides = Array.from(slider?.querySelectorAll<HTMLElement>('[data-slide]') ?? []);
+  const pageButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-page]'));
+  const prevBtn = document.querySelector<HTMLButtonElement>('[data-prev]');
+  const nextBtn = document.querySelector<HTMLButtonElement>('[data-next]');
+
+  let current = 0;
+
+  /** Fits the viewport to the active slide so shorter pages don't leave blank space. */
+  function fitHeight() {
+    if (slider && slides[current]) slider.style.height = `${slides[current].offsetHeight}px`;
+  }
+
+  function goTo(index: number, animate = true) {
+    if (!slider || !track || slides.length === 0) return;
+    current = Math.max(0, Math.min(index, slides.length - 1));
+
+    track.style.transitionDuration = animate ? '' : '0ms';
+    slider.style.transitionDuration = animate ? '' : '0ms';
+    track.style.transform = `translateX(-${current * 100}%)`;
+
+    slides.forEach((slide, i) => { slide.inert = i !== current; });
+    pageButtons.forEach((btn, i) => {
+      if (i === current) btn.setAttribute('aria-current', 'page');
+      else btn.removeAttribute('aria-current');
+    });
+    if (prevBtn) prevBtn.disabled = current === 0;
+    if (nextBtn) nextBtn.disabled = current === slides.length - 1;
+
+    fitHeight();
+
+    const url = new URL(window.location.href);
+    if (current === 0) url.searchParams.delete('page');
+    else url.searchParams.set('page', String(current + 1));
+    history.replaceState(null, '', url);
+  }
+
+  pageButtons.forEach((btn) => {
+    btn.addEventListener('click', () => goTo(Number(btn.dataset.page)));
+  });
+  prevBtn?.addEventListener('click', () => goTo(current - 1));
+  nextBtn?.addEventListener('click', () => goTo(current + 1));
+
+  // --- TOUCH SWIPE (mobile) ---
+  let startX = 0;
+  let startY = 0;
+  slider?.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+  slider?.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    // Only horizontal gestures count, so vertical scrolling is unaffected
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) goTo(current + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+
+  window.addEventListener('resize', fitHeight);
+
+  // Initial page from the URL (?page=N, 1-based), applied without animation
+  const initialPage = Number(new URLSearchParams(window.location.search).get('page')) || 1;
+  goTo(initialPage - 1, false);
+</script>

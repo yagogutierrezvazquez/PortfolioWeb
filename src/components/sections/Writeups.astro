@@ -1,9 +1,9 @@
 ---
 /**
  * @component Writeups.astro
- * @description Section displaying a list of recent CTF walkthroughs and security reports.
- * Fetches content dynamically from `src/content/writeups`, sorts by date (descending),
- * and renders the 5 most recent entries in the shared WriteupsTable.
+ * @description Section displaying a random selection of CTF walkthroughs and security reports.
+ * All writeups are rendered (newest first) with only the latest 5 visible as a no-JS fallback;
+ * a client script then shows 5 random entries on every visit.
  */
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../i18n/utils';
 import { getSortedWriteups } from '../../utils/writeups';
@@ -15,9 +15,11 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
-// --- DATA: FETCH & PROCESS ---
-// Newest first, limited to top 5
-const recentWriteups = (await getSortedWriteups()).slice(0, 5);
+// --- CONFIGURATION ---
+const VISIBLE_WRITEUPS = 5;
+
+// --- DATA: FETCH ---
+const allWriteups = await getSortedWriteups();
 ---
 
 <Section id="writeups" title={t('writeups.title')}>
@@ -28,6 +30,37 @@ const recentWriteups = (await getSortedWriteups()).slice(0, 5);
     </a>
   </div>
 
-  <WriteupsTable writeups={recentWriteups} class="mb-6" />
+  <div id="random-writeups" data-visible={VISIBLE_WRITEUPS}>
+    <WriteupsTable writeups={allWriteups} initialVisible={VISIBLE_WRITEUPS} class="mb-6" />
+  </div>
 
 </Section>
+
+<script>
+  /**
+   * RANDOM SELECTION SCRIPT
+   * Picks N random rows (Fisher-Yates shuffle) and drops the rest from the DOM,
+   * keeping the chosen ones in their original order (newest first).
+   */
+  function showRandomWriteups() {
+    const container = document.getElementById('random-writeups');
+    if (!container) return;
+
+    const visible = Number(container.dataset.visible) || 5;
+    const rows = Array.from(container.querySelectorAll<HTMLElement>('[data-writeup-row]'));
+
+    const shuffled = [...rows];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    const chosen = new Set(shuffled.slice(0, visible));
+
+    rows.forEach((row) => {
+      if (chosen.has(row)) row.hidden = false;
+      else row.remove();
+    });
+  }
+
+  showRandomWriteups();
+</script>

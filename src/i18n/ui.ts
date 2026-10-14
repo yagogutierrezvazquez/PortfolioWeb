@@ -110,6 +110,10 @@ export const ui = {
     'writeups.diff': 'Difficulty',
     'writeups.total': 'Total',
     'writeups.page.title': 'All Writeups',
+    'writeups.pagination': 'Writeups pages',
+    'writeups.prev': 'Previous page',
+    'writeups.next': 'Next page',
+    'writeups.goto': 'Go to page',
 
     // Footer Section Strings
     'footer.status': 'SYSTEM_ONLINE',
@@ -208,6 +212,10 @@ export const ui = {
     'writeups.diff': 'Dificultad',
     'writeups.total': 'Total',
     'writeups.page.title': 'Todos los Writeups',
+    'writeups.pagination': 'Páginas de writeups',
+    'writeups.prev': 'Página anterior',
+    'writeups.next': 'Página siguiente',
+    'writeups.goto': 'Ir a la página',
 
     // Texto de la Sección Footer
     'footer.status': 'SISTEMA_ONLINE',

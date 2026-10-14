@@ -12,9 +12,11 @@ import { formatDate, getDifficultyColor } from '../../utils/writeups';
 interface Props {
   writeups: CollectionEntry<'writeups'>[];
   class?: string; // Optional prop for layout-specific overrides
+  /** Rows rendered visible on load; the rest get the `hidden` attribute (client scripts may reveal them). */
+  initialVisible?: number;
 }
 
-const { writeups, class: className = '' } = Astro.props;
+const { writeups, class: className = '', initialVisible = writeups.length } = Astro.props;
 
 // --- I18N SETUP ---
 const lang = getLangFromUrl(Astro.url);
@@ -31,9 +33,11 @@ const translatePath = useTranslatedPath(lang);
     <div class="w-24 text-right">{t('writeups.diff')}</div>
   </div>
 
-  {writeups.map((post) => (
+  {writeups.map((post, index) => (
     <a
       href={translatePath(`/writeups/${post.slug}`)}
+      data-writeup-row
+      hidden={index >= initialVisible}
       class="group flex flex-col md:flex-row md:items-center px-6 py-4 md:py-3 border-b border-white/5 hover:bg-green-500/5 transition-colors cursor-pointer last:border-0"
     >
       <div class="flex md:hidden justify-between text-xs font-mono text-gray-500 mb-2">
