@@ -108,6 +108,8 @@ export const ui = {
     'writeups.platform': 'Platform',
     'writeups.desc': 'Description / Title',
     'writeups.diff': 'Difficulty',
+    'writeups.total': 'Total',
+    'writeups.page.title': 'All Writeups',
 
     // Footer Section Strings
     'footer.status': 'SYSTEM_ONLINE',
@@ -204,6 +206,8 @@ export const ui = {
     'writeups.platform': 'Plataforma',
     'writeups.desc': 'Descripción / Título',
     'writeups.diff': 'Dificultad',
+    'writeups.total': 'Total',
+    'writeups.page.title': 'Todos los Writeups',
 
     // Texto de la Sección Footer
     'footer.status': 'SISTEMA_ONLINE',

@@ -1,7 +1,7 @@
 ---
 title: "Apache Enumeration"
 description: "Enumerating an Apache HTTP server with Metasploit auxiliary scanners: version, headers, robots.txt, directories, login brute-force and user discovery."
-date: "2025-10-24"
+date: 2025-10-24
 platform: "INE Labs"
 difficulty: "Easy"
 tags: ["Apache", "HTTP", "Metasploit", "Enumeration"]

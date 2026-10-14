@@ -1,7 +1,7 @@
 ---
 title: "CTF 1: Footprinting & Scanning"
 description: "A footprinting CTF: port/version scanning, information disclosure via the HTTP Server header, robots.txt discovery, anonymous FTP credential theft and MySQL database access to capture four flags."
-date: 2025-19-10
+date: 2025-10-19
 platform: "INE Labs"
 difficulty: "Easy"
 tags: ["Footprinting", "Network", "FTP", "MySQL"]

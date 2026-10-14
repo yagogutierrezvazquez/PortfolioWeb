@@ -1,6 +1,6 @@
 ---
 title: "Service Enumeration & Misconfiguration"
-description: "Description."
+description: "A footprinting CTF assessing service misconfigurations: information disclosure in HTTP headers, robots.txt exposure, anonymous FTP access and weak database credential handling, with remediation recommendations."
 date: 2025-10-01
 platform: "INE Labs"
 difficulty: "Easy"

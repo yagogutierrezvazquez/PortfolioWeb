@@ -1,6 +1,6 @@
 ---
 title: "System & Host Based Attacks"
-description: "Description."
+description: "A host-based attacks CTF against two Windows lab targets, covering weak credentials, a misconfigured IIS WebDAV service and exposed SMB shares, with hardening recommendations."
 date: 2025-11-01
 platform: "INE Labs"
 difficulty: "Medium"
