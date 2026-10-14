@@ -4,12 +4,14 @@
  * @description Full archive view for all CTF writeups and security reports.
  * Entries are sorted by date (newest first) and grouped into numbered pages of
  * WRITEUPS_PER_PAGE, displayed as a horizontal slider (buttons, arrows, swipe).
+ * Includes a keyword search (titles & tags), clickable tags and a difficulty filter.
+ * State is mirrored in the URL (?q=, ?diff=, ?page=).
  * Rendered by both /writeups (EN) and /es/writeups (ES).
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import WriteupsTable from './WriteupsTable.astro';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../i18n/utils';
-import { getSortedWriteups } from '../../utils/writeups';
+import { getSortedWriteups, getDifficultyColor } from '../../utils/writeups';
 
 // --- I18N SETUP ---
 const lang = getLangFromUrl(Astro.url);
@@ -18,6 +20,7 @@ const translatePath = useTranslatedPath(lang);
 
 // --- CONFIGURATION ---
 const WRITEUPS_PER_PAGE = 7;
+const DIFFICULTY_ORDER = ['Easy', 'Medium', 'Hard', 'Insane'];
 
 // --- DATA: FETCH, SORT & PAGINATE ---
 const sortedWriteups = await getSortedWriteups();
@@ -26,18 +29,21 @@ const pages = Array.from(
   (_, i) => sortedWriteups.slice(i * WRITEUPS_PER_PAGE, (i + 1) * WRITEUPS_PER_PAGE)
 );
 
+// Only offer difficulty filters that actually exist in the collection
+const difficulties = DIFFICULTY_ORDER.filter((d) => sortedWriteups.some((w) => w.data.difficulty === d));
+
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
 <BaseLayout title={t('writeups.page.title')}>
 
-  <div style="position: relative; z-index: 1; padding-top: 150px; background-color: #0a0a0a; min-height: 100vh;">
+  <div class="relative z-1 pt-[150px] md:pt-24 bg-[#0a0a0a] min-h-screen">
 
-    <div class="max-w-4xl mx-auto px-6 pb-24">
+    <div class="max-w-4xl mx-auto px-6 pb-24 md:pb-6">
 
-      <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div class="mb-12 md:mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <a href={translatePath('/#writeups')} class="inline-flex items-center gap-2 text-sm font-mono text-gray-500 hover:text-green-500 transition-colors mb-4">
+          <a href={translatePath('/#writeups')} class="inline-flex items-center gap-2 text-sm font-mono text-gray-500 hover:text-green-500 transition-colors mb-4 md:mb-2">
             <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
@@ -54,27 +60,82 @@ const pad = (n: number) => String(n).padStart(2, '0');
         </div>
       </div>
 
-      <div id="writeups-slider" class="overflow-hidden transition-[height] duration-500 ease-out">
+      {/* --- SEARCH BAR --- */}
+      <label
+        for="writeups-search"
+        class="mb-4 md:mb-3 flex items-center gap-3 border border-white/10 bg-black rounded-sm px-4 py-3 font-mono text-sm focus-within:border-green-500/50 transition-colors cursor-text"
+      >
+        <span class="text-green-500 select-none">$</span>
+        <span class="text-gray-500 whitespace-nowrap select-none">grep -i</span>
+        <input
+          id="writeups-search"
+          type="search"
+          placeholder={t('writeups.search.placeholder')}
+          aria-label={t('writeups.search.label')}
+          autocomplete="off"
+          spellcheck="false"
+          class="flex-1 min-w-0 bg-transparent outline-none text-gray-200 placeholder:text-gray-600 caret-green-500"
+        />
+        <kbd class="hidden md:block text-[10px] text-gray-600 border border-white/10 px-1.5 py-0.5 rounded-sm select-none">/</kbd>
+      </label>
+
+      {/* --- DIFFICULTY FILTER & RESULT COUNT --- */}
+      <div class="mb-6 md:mb-4 flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
+        <div role="group" aria-label={t('writeups.filter.diff')} class="flex flex-wrap gap-2">
+          <button
+            type="button"
+            data-diff=""
+            aria-pressed="true"
+            class="px-2 py-1 border border-white/10 rounded-sm uppercase text-gray-500 hover:text-gray-300 transition-colors aria-pressed:border-green-500 aria-pressed:text-green-500 aria-pressed:bg-green-500/5"
+          >
+            [{t('writeups.filter.all')}]
+          </button>
+          {difficulties.map((diff) => (
+            <button
+              type="button"
+              data-diff={diff}
+              aria-pressed="false"
+              class={`px-2 py-1 border border-white/10 rounded-sm uppercase opacity-50 hover:opacity-100 transition-all aria-pressed:opacity-100 aria-pressed:border-current aria-pressed:bg-white/5 ${getDifficultyColor(diff)}`}
+            >
+              [{diff}]
+            </button>
+          ))}
+        </div>
+
+        <p id="writeups-count" data-label={t('writeups.search.results')} class="text-gray-500" aria-live="polite"></p>
+      </div>
+
+      {/* --- RESULTS SLIDER --- */}
+      <p id="writeups-empty" hidden class="border border-white/10 bg-black rounded-sm px-6 py-8 text-center font-mono text-sm text-gray-500">
+        grep: <span class="text-red-500/80">{t('writeups.search.empty')}</span>
+      </p>
+
+      <div id="writeups-slider" data-per-page={WRITEUPS_PER_PAGE} class="overflow-hidden transition-[height] duration-500 ease-out">
         <div data-track class="flex items-start transition-transform duration-500 ease-out">
           {pages.map((page, i) => (
             <div data-slide class="w-full shrink-0" inert={i !== 0}>
-              <WriteupsTable writeups={page} />
+              <WriteupsTable writeups={page} dense />
             </div>
           ))}
         </div>
       </div>
 
-      {pages.length > 1 && (
-        <nav aria-label={t('writeups.pagination')} class="mt-8 flex items-center justify-center gap-2 font-mono text-sm">
-          <button
-            type="button"
-            data-prev
-            aria-label={t('writeups.prev')}
-            class="px-3 py-2 text-gray-500 hover:text-green-500 disabled:opacity-30 disabled:pointer-events-none transition-colors"
-          >
-            &lt;
-          </button>
+      <nav
+        id="writeups-pagination"
+        aria-label={t('writeups.pagination')}
+        hidden={pages.length <= 1}
+        class="mt-8 md:mt-5 flex items-center justify-center gap-2 font-mono text-sm"
+      >
+        <button
+          type="button"
+          data-prev
+          aria-label={t('writeups.prev')}
+          class="px-3 py-2 text-gray-500 hover:text-green-500 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+        >
+          &lt;
+        </button>
 
+        <div data-pages data-goto-label={t('writeups.goto')} class="flex flex-wrap justify-center gap-2">
           {pages.map((_, i) => (
             <button
               type="button"
@@ -86,17 +147,17 @@ const pad = (n: number) => String(n).padStart(2, '0');
               [{pad(i + 1)}]
             </button>
           ))}
+        </div>
 
-          <button
-            type="button"
-            data-next
-            aria-label={t('writeups.next')}
-            class="px-3 py-2 text-gray-500 hover:text-green-500 disabled:opacity-30 disabled:pointer-events-none transition-colors"
-          >
-            &gt;
-          </button>
-        </nav>
-      )}
+        <button
+          type="button"
+          data-next
+          aria-label={t('writeups.next')}
+          class="px-3 py-2 text-gray-500 hover:text-green-500 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+        >
+          &gt;
+        </button>
+      </nav>
 
     </div>
   </div>
@@ -104,71 +165,303 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 <script>
   /**
-   * WRITEUPS SLIDER
-   * Slides between pre-rendered pages, syncing the active page with `?page=N`
-   * so the browser "back" button returns to the same page after opening a writeup.
+   * WRITEUPS SEARCH + SLIDER
+   * - Indexes every server-rendered row (title + tags + difficulty).
+   * - Filters by keywords (all terms must match a title or a tag; "#term" matches tags only)
+   *   and by difficulty, then rebuilds the slider pages from the matching rows.
+   * - Highlights matches in titles and tags.
+   * - Mirrors state in the URL (?q=, ?diff=, ?page=) so "back" and shared links keep it.
    */
   const slider = document.getElementById('writeups-slider');
   const track = slider?.querySelector<HTMLElement>('[data-track]');
-  const slides = Array.from(slider?.querySelectorAll<HTMLElement>('[data-slide]') ?? []);
-  const pageButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-page]'));
-  const prevBtn = document.querySelector<HTMLButtonElement>('[data-prev]');
-  const nextBtn = document.querySelector<HTMLButtonElement>('[data-next]');
+  const searchInput = document.getElementById('writeups-search') as HTMLInputElement | null;
+  const countEl = document.getElementById('writeups-count');
+  const emptyEl = document.getElementById('writeups-empty');
+  const pagination = document.getElementById('writeups-pagination');
+  const pagesBox = pagination?.querySelector<HTMLElement>('[data-pages]');
+  const prevBtn = pagination?.querySelector<HTMLButtonElement>('[data-prev]');
+  const nextBtn = pagination?.querySelector<HTMLButtonElement>('[data-next]');
+  const diffButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-diff]'));
 
-  let current = 0;
+  if (slider && track && searchInput && pagesBox) {
+    // Max rows per page; on desktop it shrinks to whatever fits the viewport (no vertical scroll)
+    const maxPerPage = Number(slider.dataset.perPage) || 7;
+    let perPage = maxPerPage;
+    const gotoLabel = pagesBox.dataset.gotoLabel ?? '';
 
-  /** Fits the viewport to the active slide so shorter pages don't leave blank space. */
-  function fitHeight() {
-    if (slider && slides[current]) slider.style.height = `${slides[current].offsetHeight}px`;
-  }
+    // --- TEMPLATES (taken from the server-rendered markup) ---
+    const firstTable = track.querySelector<HTMLElement>('[data-slide] > *');
+    const tableTemplate = firstTable?.cloneNode(true) as HTMLElement;
+    tableTemplate?.querySelectorAll('[data-writeup-row]').forEach((row) => row.remove());
+    const pageBtnTemplate = pagesBox.querySelector<HTMLButtonElement>('[data-page]')?.cloneNode(true) as HTMLButtonElement | undefined;
 
-  function goTo(index: number, animate = true) {
-    if (!slider || !track || slides.length === 0) return;
-    current = Math.max(0, Math.min(index, slides.length - 1));
+    // --- INDEX ---
+    /** Lowercase + strip accents so "enumeracion" matches "Enumeración". */
+    const normalize = (str: string) =>
+      str.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
-    track.style.transitionDuration = animate ? '' : '0ms';
-    slider.style.transitionDuration = animate ? '' : '0ms';
-    track.style.transform = `translateX(-${current * 100}%)`;
-
-    slides.forEach((slide, i) => { slide.inert = i !== current; });
-    pageButtons.forEach((btn, i) => {
-      if (i === current) btn.setAttribute('aria-current', 'page');
-      else btn.removeAttribute('aria-current');
+    const entries = Array.from(track.querySelectorAll<HTMLElement>('[data-writeup-row]')).map((row) => {
+      const title = row.dataset.title ?? '';
+      const tags = (row.dataset.tags ?? '').split('|').filter(Boolean);
+      return {
+        row,
+        title,
+        normTitle: normalize(title),
+        tags,
+        normTags: tags.map(normalize),
+        difficulty: row.dataset.difficulty ?? '',
+        titleEl: row.querySelector<HTMLElement>('[data-title-text]'),
+        tagEls: Array.from(row.querySelectorAll<HTMLElement>('[data-tag]')),
+      };
     });
-    if (prevBtn) prevBtn.disabled = current === 0;
-    if (nextBtn) nextBtn.disabled = current === slides.length - 1;
 
-    fitHeight();
+    // --- STATE ---
+    let query = '';
+    let difficulty = '';
+    let slides: HTMLElement[] = [];
+    let pageButtons: HTMLButtonElement[] = [];
+    let current = 0;
 
-    const url = new URL(window.location.href);
-    if (current === 0) url.searchParams.delete('page');
-    else url.searchParams.set('page', String(current + 1));
-    history.replaceState(null, '', url);
+    /** Splits the query into terms; "#term" restricts the term to tags. */
+    function parseTerms(q: string) {
+      return normalize(q).split(/\s+/).filter(Boolean).map((term) =>
+        term.startsWith('#') ? { text: term.slice(1), tagOnly: true } : { text: term, tagOnly: false }
+      ).filter((term) => term.text.length > 0);
+    }
+
+    /** Re-renders a title with every occurrence of the given terms wrapped in <mark>. */
+    function highlightTitle(el: HTMLElement, title: string, normTitle: string, terms: string[]) {
+      el.textContent = '';
+      // Accent stripping may change string length for exotic characters; skip highlighting then
+      if (terms.length === 0 || normTitle.length !== title.length) {
+        el.textContent = title;
+        return;
+      }
+      const marked = new Array(title.length).fill(false);
+      terms.forEach((term) => {
+        let idx = normTitle.indexOf(term);
+        while (idx !== -1) {
+          for (let i = idx; i < idx + term.length; i++) marked[i] = true;
+          idx = normTitle.indexOf(term, idx + term.length);
+        }
+      });
+      let i = 0;
+      while (i < title.length) {
+        const isMarked = marked[i];
+        let j = i;
+        while (j < title.length && marked[j] === isMarked) j++;
+        const chunk = title.slice(i, j);
+        if (isMarked) {
+          const mark = document.createElement('mark');
+          mark.className = 'bg-green-500/20 text-green-400 rounded-sm';
+          mark.textContent = chunk;
+          el.appendChild(mark);
+        } else {
+          el.appendChild(document.createTextNode(chunk));
+        }
+        i = j;
+      }
+    }
+
+    function filterEntries() {
+      const terms = parseTerms(query);
+      return entries.filter((entry) => {
+        const matchesDiff = !difficulty || entry.difficulty === difficulty;
+        const matchesTerms = terms.every(({ text, tagOnly }) =>
+          entry.normTags.some((tag) => tag.includes(text)) || (!tagOnly && entry.normTitle.includes(text))
+        );
+
+        // Highlight where each entry matched (title and/or tags)
+        const titleTerms = terms.filter((term) => !term.tagOnly && entry.normTitle.includes(term.text)).map((term) => term.text);
+        if (entry.titleEl) highlightTitle(entry.titleEl, entry.title, entry.normTitle, titleTerms);
+        entry.tagEls.forEach((tagEl, i) => {
+          const hit = terms.some(({ text }) => entry.normTags[i].includes(text));
+          tagEl.toggleAttribute('data-match', hit);
+        });
+
+        return matchesDiff && matchesTerms;
+      });
+    }
+
+    // --- RENDER ---
+    function buildSlides(matches: typeof entries) {
+      slides = [];
+      for (let i = 0; i < matches.length; i += perPage) {
+        const slide = document.createElement('div');
+        slide.dataset.slide = '';
+        slide.className = 'w-full shrink-0';
+        const table = tableTemplate.cloneNode(true) as HTMLElement;
+        matches.slice(i, i + perPage).forEach(({ row }) => table.appendChild(row));
+        slide.appendChild(table);
+        slides.push(slide);
+      }
+      track!.replaceChildren(...slides);
+
+      pageButtons = slides.map((_, i) => {
+        const btn = pageBtnTemplate!.cloneNode(true) as HTMLButtonElement;
+        btn.dataset.page = String(i);
+        btn.textContent = `[${String(i + 1).padStart(2, '0')}]`;
+        btn.setAttribute('aria-label', `${gotoLabel} ${i + 1}`);
+        btn.addEventListener('click', () => goTo(i));
+        return btn;
+      });
+      pagesBox!.replaceChildren(...pageButtons);
+
+      if (pagination) pagination.hidden = slides.length <= 1;
+      if (emptyEl) emptyEl.hidden = matches.length > 0;
+      slider!.hidden = matches.length === 0;
+
+      if (countEl) {
+        const filtering = query.trim() !== '' || difficulty !== '';
+        countEl.textContent = filtering ? `${matches.length}/${entries.length} ${countEl.dataset.label ?? ''}`.trim() : '';
+      }
+    }
+
+    /** Fits the viewport to the active slide so shorter pages don't leave blank space. */
+    function fitHeight() {
+      if (slides[current]) slider!.style.height = `${slides[current].offsetHeight}px`;
+    }
+
+    function syncUrl() {
+      const url = new URL(window.location.href);
+      const set = (key: string, value: string) => value ? url.searchParams.set(key, value) : url.searchParams.delete(key);
+      set('q', query.trim());
+      set('diff', difficulty);
+      set('page', current > 0 ? String(current + 1) : '');
+      history.replaceState(null, '', url);
+    }
+
+    function goTo(index: number, animate = true) {
+      current = Math.max(0, Math.min(index, slides.length - 1));
+
+      track!.style.transitionDuration = animate ? '' : '0ms';
+      slider!.style.transitionDuration = animate ? '' : '0ms';
+      track!.style.transform = `translateX(-${current * 100}%)`;
+
+      slides.forEach((slide, i) => { slide.inert = i !== current; });
+      pageButtons.forEach((btn, i) => {
+        if (i === current) btn.setAttribute('aria-current', 'page');
+        else btn.removeAttribute('aria-current');
+      });
+      if (prevBtn) prevBtn.disabled = current === 0;
+      if (nextBtn) nextBtn.disabled = current >= slides.length - 1;
+
+      fitHeight();
+      syncUrl();
+    }
+
+    /** Applies the current query/difficulty and rebuilds the pages. */
+    function apply(page = 0, animate = false) {
+      diffButtons.forEach((btn) => btn.setAttribute('aria-pressed', String(btn.dataset.diff === difficulty)));
+      buildSlides(filterEntries());
+      goTo(page, animate);
+    }
+
+    // --- EVENTS ---
+    searchInput.addEventListener('input', () => {
+      query = searchInput.value;
+      apply();
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        searchInput.value = '';
+        query = '';
+        apply();
+      }
+    });
+
+    // "/" focuses the search bar (unless already typing somewhere)
+    document.addEventListener('keydown', (e) => {
+      const target = e.target as HTMLElement;
+      if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(target.tagName) && !target.isContentEditable) {
+        e.preventDefault();
+        searchInput.focus();
+      }
+    });
+
+    diffButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        difficulty = btn.dataset.diff ?? '';
+        apply();
+      });
+    });
+
+    // Clicking a tag filters in place instead of reloading the page
+    track.addEventListener('click', (e) => {
+      const tagLink = (e.target as HTMLElement).closest<HTMLElement>('[data-tag]');
+      if (!tagLink) return;
+      e.preventDefault();
+      query = `#${tagLink.dataset.tag}`;
+      searchInput.value = query;
+      apply();
+      searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    prevBtn?.addEventListener('click', () => goTo(current - 1));
+    nextBtn?.addEventListener('click', () => goTo(current + 1));
+
+    // --- TOUCH SWIPE (mobile) ---
+    let startX = 0;
+    let startY = 0;
+    slider.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    }, { passive: true });
+    slider.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      // Only horizontal gestures count, so vertical scrolling is unaffected
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) goTo(current + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+
+    // --- ADAPTIVE PAGE SIZE (desktop) ---
+    const desktop = window.matchMedia('(min-width: 768px)');
+    const MIN_PER_PAGE = 3;
+
+    /** Measures the space around the slider once (nav forced visible so it is always reserved). */
+    function measureLayout() {
+      const navWasHidden = pagination?.hidden ?? false;
+      if (pagination) pagination.hidden = false;
+      const container = slider!.parentElement!;
+      const sliderRect = slider!.getBoundingClientRect();
+      const layout = {
+        above: sliderRect.top + window.scrollY,
+        below: container.getBoundingClientRect().bottom - sliderRect.bottom,
+        tableHeader: track!.querySelector<HTMLElement>('[data-slide] > * > :first-child')?.offsetHeight ?? 0,
+        row: Math.max(...entries.map(({ row }) => row.offsetHeight)),
+      };
+      if (pagination) pagination.hidden = navWasHidden;
+      return layout;
+    }
+
+    const layout = measureLayout();
+
+    function computePerPage() {
+      if (!desktop.matches) return maxPerPage;
+      const available = window.innerHeight - layout.above - layout.below - layout.tableHeader - 2; // 2px table borders
+      return Math.max(MIN_PER_PAGE, Math.min(maxPerPage, Math.floor(available / layout.row)));
+    }
+
+    window.addEventListener('resize', () => {
+      const next = computePerPage();
+      if (next !== perPage) {
+        // Keep the first visible writeup on screen after re-paginating
+        const firstIndex = current * perPage;
+        perPage = next;
+        apply(Math.floor(firstIndex / perPage));
+      } else {
+        fitHeight();
+      }
+    });
+
+    // --- INIT FROM URL (?q=, ?diff=, ?page= 1-based) ---
+    const params = new URLSearchParams(window.location.search);
+    query = params.get('q') ?? '';
+    searchInput.value = query;
+    const requestedDiff = params.get('diff') ?? '';
+    difficulty = diffButtons.some((btn) => btn.dataset.diff === requestedDiff) ? requestedDiff : '';
+    perPage = computePerPage();
+    apply((Number(params.get('page')) || 1) - 1);
   }
-
-  pageButtons.forEach((btn) => {
-    btn.addEventListener('click', () => goTo(Number(btn.dataset.page)));
-  });
-  prevBtn?.addEventListener('click', () => goTo(current - 1));
-  nextBtn?.addEventListener('click', () => goTo(current + 1));
-
-  // --- TOUCH SWIPE (mobile) ---
-  let startX = 0;
-  let startY = 0;
-  slider?.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-  }, { passive: true });
-  slider?.addEventListener('touchend', (e) => {
-    const dx = e.changedTouches[0].clientX - startX;
-    const dy = e.changedTouches[0].clientY - startY;
-    // Only horizontal gestures count, so vertical scrolling is unaffected
-    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) goTo(current + (dx < 0 ? 1 : -1));
-  }, { passive: true });
-
-  window.addEventListener('resize', fitHeight);
-
-  // Initial page from the URL (?page=N, 1-based), applied without animation
-  const initialPage = Number(new URLSearchParams(window.location.search).get('page')) || 1;
-  goTo(initialPage - 1, false);
 </script>

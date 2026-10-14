@@ -114,6 +114,13 @@ export const ui = {
     'writeups.prev': 'Previous page',
     'writeups.next': 'Next page',
     'writeups.goto': 'Go to page',
+    'writeups.search.label': 'Search writeups by title or tag',
+    'writeups.search.placeholder': 'keyword or #tag',
+    'writeups.search.empty': 'no matches found',
+    'writeups.search.results': 'results',
+    'writeups.filter.diff': 'Filter by difficulty',
+    'writeups.filter.all': 'All',
+    'writeups.tag.search': 'Search tag',
 
     // Footer Section Strings
     'footer.status': 'SYSTEM_ONLINE',
@@ -216,6 +223,13 @@ export const ui = {
     'writeups.prev': 'Página anterior',
     'writeups.next': 'Página siguiente',
     'writeups.goto': 'Ir a la página',
+    'writeups.search.label': 'Buscar writeups por título o tag',
+    'writeups.search.placeholder': 'palabra clave o #tag',
+    'writeups.search.empty': 'no se encontraron coincidencias',
+    'writeups.search.results': 'resultados',
+    'writeups.filter.diff': 'Filtrar por dificultad',
+    'writeups.filter.all': 'Todos',
+    'writeups.tag.search': 'Buscar tag',
 
     // Texto de la Sección Footer
     'footer.status': 'SISTEMA_ONLINE',

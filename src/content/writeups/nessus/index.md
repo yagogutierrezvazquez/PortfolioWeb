@@ -4,7 +4,7 @@ description: "Running a vulnerability scan with Nessus Essentials, importing the
 date: 2025-10-29
 platform: "INE Labs"
 difficulty: "Medium"
-tags: ["Nessus", "Vulnerability Scanning", "Metasploit", "ManageEngine", "Windows"]
+tags: ["Nessus", "VulnerabilityScanning", "Metasploit", "ManageEngine", "Windows"]
 cover: "./photo1.png"
 ---
 

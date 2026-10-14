@@ -14,9 +14,11 @@ interface Props {
   class?: string; // Optional prop for layout-specific overrides
   /** Rows rendered visible on load; the rest get the `hidden` attribute (client scripts may reveal them). */
   initialVisible?: number;
+  /** Tighter row padding on desktop (used by the archive page to fit one page per screen). */
+  dense?: boolean;
 }
 
-const { writeups, class: className = '', initialVisible = writeups.length } = Astro.props;
+const { writeups, class: className = '', initialVisible = writeups.length, dense = false } = Astro.props;
 
 // --- I18N SETUP ---
 const lang = getLangFromUrl(Astro.url);
@@ -34,11 +36,13 @@ const translatePath = useTranslatedPath(lang);
   </div>
 
   {writeups.map((post, index) => (
-    <a
-      href={translatePath(`/writeups/${post.slug}`)}
+    <div
       data-writeup-row
+      data-title={post.data.title}
+      data-tags={post.data.tags.join('|')}
+      data-difficulty={post.data.difficulty}
       hidden={index >= initialVisible}
-      class="group flex flex-col md:flex-row md:items-center px-6 py-4 md:py-3 border-b border-white/5 hover:bg-green-500/5 transition-colors cursor-pointer last:border-0"
+      class={`group relative flex flex-col md:flex-row md:items-center px-6 py-4 ${dense ? 'md:py-2' : 'md:py-3'} border-b border-white/5 hover:bg-green-500/5 transition-colors cursor-pointer last:border-0`}
     >
       <div class="flex md:hidden justify-between text-xs font-mono text-gray-500 mb-2">
         <span>{formatDate(post.data.date)}</span>
@@ -57,11 +61,22 @@ const translatePath = useTranslatedPath(lang);
 
       <div class="flex-1 pr-4">
         <h3 class="text-sm md:text-base font-bold text-gray-200 group-hover:text-white transition-colors">
-          {post.data.title}
+          {/* Stretched link: its ::after covers the whole row, so the row stays clickable
+              while the tag links below remain independent (no nested <a>). */}
+          <a 
+            href={translatePath(`/writeups/${post.slug}`)} 
+            data-title-text
+            class="after:absolute after:inset-0 focus:outline-none focus-visible:after:outline focus-visible:after:outline-1 focus-visible:after:outline-green-500"
+          >{post.data.title}</a>
         </h3>
-        <div class="hidden md:flex gap-2 mt-1">
+        <div class="flex flex-wrap gap-x-2 gap-y-1 mt-1">
            {post.data.tags.map((tag) => (
-             <span class="text-[10px] text-gray-600 font-mono">#{tag}</span>
+             <a 
+               href={`${translatePath('/writeups')}?q=${encodeURIComponent(`#${tag}`)}`}
+               data-tag={tag}
+               aria-label={`${t('writeups.tag.search')}: ${tag}`}
+               class="relative z-10 text-[10px] text-gray-600 font-mono hover:text-green-500 data-match:text-green-400 transition-colors"
+             >#{tag}</a>
            ))}
         </div>
       </div>
@@ -74,7 +89,7 @@ const translatePath = useTranslatedPath(lang);
            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
          </svg>
       </div>
-    </a>
+    </div>
   ))}
 
 </div>
