@@ -1,26 +1,35 @@
 /**
  * @file projects.ts
  * @description Centralized data store for featured web/fullstack projects and CLI tools.
- * Leverages i18n keys for localization and Astro ImageMetadata for optimized asset processing.
+ * Leverages i18n keys for localization. Video assets live in /public/videos.
  */
 
-import type { ImageMetadata } from 'astro';
-
-// --- ASSET IMPORTS ---
-import portfolioWeb from '../assets/images/projects/portfolioweb.png';
-import successStreet from '../assets/images/projects/successstreet.png';
-
 // --- INTERFACES ---
-/** 
- * Defines a featured web or full-stack project with visual representation. 
+/**
+ * Self-hosted, muted demo video. Paths are relative to /public.
+ */
+export interface ProjectVideo {
+  mp4: string;
+  webm: string;
+  poster: string;
+}
+
+/**
+ * Defines a web, full-stack or system project.
+ * The `featured` one is rendered full-width (with its video) above the grid.
  */
 export interface Project {
   titleKey: string;
   statusKey: string;
   tech: string[];
   descKey: string;
-  link: string;
-  image: ImageMetadata;
+  links: {
+    github: string;
+    linkedin?: string;
+    reddit?: string;
+  };
+  featured?: boolean;
+  video?: ProjectVideo;
 }
 
 /** 
@@ -39,20 +48,37 @@ export interface Tool {
  */
 export const projectsData: Project[] = [
   {
+    titleKey: 'projects.arch.title',
+    statusKey: 'projects.status.live',
+    tech: ["Arch Linux", "Hyprland", "Wayland", "Quickshell", "Bash", "Lua"],
+    descKey: 'projects.arch.desc',
+    links: {
+      github: "https://github.com/yagogutierrezvazquez/ArchLinux_Hyprland-Wayland"
+    },
+    featured: true,
+    video: {
+      mp4: "/videos/archlinux.mp4",
+      webm: "/videos/archlinux.webm",
+      poster: "/videos/archlinux-poster.jpg"
+    }
+  },
+  {
     titleKey: 'projects.v1.title',
     statusKey: 'projects.status.live',
     tech: ["Astro", "Tailwind", "TypeScript"],
     descKey: 'projects.v1.desc',
-    link: "https://github.com/yagogutierrezvazquez/PortfolioWeb",
-    image: portfolioWeb
+    links: {
+      github: "https://github.com/yagogutierrezvazquez/PortfolioWeb"
+    }
   },
   {
     titleKey: 'projects.tfg.title',
     statusKey: 'projects.status.archived',
     tech: ["Angular", "NodeJS", "Bootstrap"],
     descKey: 'projects.tfg.desc',
-    link: "https://github.com/yagogutierrezvazquez/SuccessStreet",
-    image: successStreet
+    links: {
+      github: "https://github.com/yagogutierrezvazquez/SuccessStreet-TFG"
+    }
   }
 ];
 

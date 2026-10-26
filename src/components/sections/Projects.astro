@@ -1,11 +1,11 @@
 ---
 /**
  * @component Projects.astro
- * @description Hybrid portfolio section showcasing Featured Projects & Tools.
+ * @description Portfolio section: one full-width featured project (with demo video)
+ * followed by a grid of secondary projects.
  */
-import { Image } from 'astro:assets';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
-import { projectsData } from '../../data/projects';
+import { projectsData, type Project } from '../../data/projects';
 import Section from '../ui/Section.astro';
 import Badge from '../ui/Badge.astro';
 
@@ -15,29 +15,96 @@ const t = useTranslations(lang);
 
 // Utility type for dynamically inferring dictionary keys
 type TKey = Parameters<typeof t>[0];
+
+// --- DATA SPLIT ---
+const featured = projectsData.find((project) => project.featured);
+const others = projectsData.filter((project) => !project.featured);
+
+/** Builds the list of external links a project actually has, in display order. */
+const getLinks = (project: Project) => [
+  { label: t('projects.link.github'), href: project.links.github },
+  { label: t('projects.link.linkedin'), href: project.links.linkedin },
+  { label: t('projects.link.reddit'), href: project.links.reddit },
+].flatMap(({ label, href }) => (href ? [{ label, href }] : []));
 ---
 
 <Section id="projects" title={t('projects.title')}>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-    {projectsData.map((project) => (
-      <article class="group relative bg-white/2 border border-white/10 rounded-sm overflow-hidden hover:border-green-500/30 transition-all duration-300 flex flex-col h-full hover:-translate-y-1">
-        
-        <a href={project.link} target="_blank" class="block overflow-hidden h-48 relative">
-          <div class="absolute inset-0 bg-transparent group-hover:bg-green-500/10 transition-colors z-10"></div>
-          <Image 
-            src={project.image} 
-            alt={t(project.titleKey as TKey)} 
-            class="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-500 group-hover:grayscale-0"
-          />
-        </a>
+  {featured && (
+    <article class="group bg-white/2 border border-white/10 rounded-sm overflow-hidden hover:border-green-500/30 transition-colors duration-300 mb-8">
 
-        <div class="p-6 flex flex-col flex-1">
-          <div class="flex justify-between items-start mb-4">
-            <h3 class="text-xl font-bold text-white group-hover:text-green-400 transition-colors">
-              {t(project.titleKey as TKey)}
+      {featured.video && (
+        <div class="relative aspect-video bg-black border-b border-white/10">
+          <video
+            class="project-video w-full h-full object-cover"
+            poster={featured.video.poster}
+            aria-label={t('projects.video.label')}
+            muted
+            loop
+            playsinline
+            controls
+            preload="none"
+          >
+            <source src={featured.video.webm} type="video/webm" />
+            <source src={featured.video.mp4} type="video/mp4" />
+          </video>
+        </div>
+      )}
+
+      <div class="p-6 md:p-8">
+        <div class="flex flex-wrap justify-between items-start gap-3 mb-4">
+          <div>
+            <span class="block text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-1">
+              // {t('projects.featured')}
+            </span>
+            <h3 class="text-xl md:text-2xl font-bold text-white group-hover:text-green-400 transition-colors">
+              {t(featured.titleKey as TKey)}
             </h3>
-            <span class="text-[10px] border border-green-500/30 text-green-500 px-2 py-1 rounded-sm font-mono uppercase">
+          </div>
+          <span class="text-[10px] border border-green-500/30 text-green-500 px-2 py-1 rounded-sm font-mono uppercase">
+            {t(featured.statusKey as TKey)}
+          </span>
+        </div>
+
+        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+          {t(featured.descKey as TKey)}
+        </p>
+
+        <div class="flex flex-wrap gap-2 mb-6">
+          {featured.tech.map((techItem) => (
+            <Badge text={techItem}/>
+          ))}
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          {getLinks(featured).map((link) => (
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs font-mono text-green-500 border border-green-500/30 px-3 py-2 rounded-sm hover:bg-green-500/10 transition-colors inline-flex items-center gap-2"
+            >
+              {link.label}
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+            </a>
+          ))}
+        </div>
+      </div>
+    </article>
+  )}
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+    {others.map((project) => (
+      <article class="group relative bg-white/2 border border-white/10 rounded-sm overflow-hidden hover:border-green-500/30 transition-all duration-300 flex flex-col h-full hover:-translate-y-1">
+        <div class="p-6 flex flex-col flex-1">
+          <div class="flex justify-between items-start gap-3 mb-4">
+            <h3 class="text-xl font-bold text-white group-hover:text-green-400 transition-colors">
+              <!-- Stretched link: the ::after overlay makes the whole card clickable -->
+              <a href={project.links.github} target="_blank" rel="noopener noreferrer" class="after:absolute after:inset-0 after:content-['']">
+                {t(project.titleKey as TKey)}
+              </a>
+            </h3>
+            <span class="text-[10px] border border-green-500/30 text-green-500 px-2 py-1 rounded-sm font-mono uppercase shrink-0">
               {t(project.statusKey as TKey)}
             </span>
           </div>
@@ -55,12 +122,37 @@ type TKey = Parameters<typeof t>[0];
       </article>
     ))}
   </div>
-  
+
   <div class="pt-6 text-center">
-    <a href="https://github.com/yagogutierrezvazquez" target="_blank" class="text-gray-500 hover:text-green-500 font-mono text-sm transition-colors inline-flex items-center gap-2">
+    <a href="https://github.com/yagogutierrezvazquez" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-green-500 font-mono text-sm transition-colors inline-flex items-center gap-2">
       {t('projects.more' as TKey)}
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
     </a>
   </div>
 
 </Section>
+
+<script>
+  /**
+   * DEMO VIDEO AUTOPLAY
+   * Plays the featured video only while it is on screen (nothing is downloaded before),
+   * and leaves it paused on its poster for users who prefer reduced motion.
+   */
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const videos = document.querySelectorAll<HTMLVideoElement>('.project-video');
+
+  if (!reducedMotion && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const video = entry.target as HTMLVideoElement;
+        if (entry.isIntersecting) {
+          video.play().catch(() => { /* autoplay blocked: poster + controls remain */ });
+        } else {
+          video.pause();
+        }
+      });
+    }, { threshold: 0.4 });
+
+    videos.forEach((video) => observer.observe(video));
+  }
+</script>
