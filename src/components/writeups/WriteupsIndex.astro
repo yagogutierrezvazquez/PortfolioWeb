@@ -135,14 +135,14 @@ const pad = (n: number) => String(n).padStart(2, '0');
           &lt;
         </button>
 
-        <div data-pages data-goto-label={t('writeups.goto')} class="flex flex-wrap justify-center gap-2">
+        <div data-pages data-goto-label={t('writeups.goto')} class="flex justify-center gap-1.5 md:gap-2">
           {pages.map((_, i) => (
             <button
               type="button"
               data-page={i}
               aria-label={`${t('writeups.goto')} ${i + 1}`}
               aria-current={i === 0 ? 'page' : undefined}
-              class="px-3 py-2 border rounded-sm transition-colors border-white/10 text-gray-500 hover:text-green-500 hover:border-green-500/30 aria-[current=page]:border-green-500 aria-[current=page]:text-green-500 aria-[current=page]:bg-green-500/5"
+              class="px-2 md:px-3 py-2 border rounded-sm transition-colors border-white/10 text-gray-500 hover:text-green-500 hover:border-green-500/30 aria-[current=page]:border-green-500 aria-[current=page]:text-green-500 aria-[current=page]:bg-green-500/5"
             >
               [{pad(i + 1)}]
             </button>
@@ -221,6 +221,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     let slides: HTMLElement[] = [];
     let pageButtons: HTMLButtonElement[] = [];
     let current = 0;
+    const desktop = window.matchMedia('(min-width: 768px)');
 
     /** Splits the query into terms; "#term" restricts the term to tags. */
     function parseTerms(q: string) {
@@ -305,7 +306,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
         btn.addEventListener('click', () => goTo(i));
         return btn;
       });
-      pagesBox!.replaceChildren(...pageButtons);
 
       if (pagination) pagination.hidden = slides.length <= 1;
       if (emptyEl) emptyEl.hidden = matches.length > 0;
@@ -320,6 +320,37 @@ const pad = (n: number) => String(n).padStart(2, '0');
     /** Fits the viewport to the active slide so shorter pages don't leave blank space. */
     function fitHeight() {
       if (slides[current]) slider!.style.height = `${slides[current].offsetHeight}px`;
+    }
+
+    /**
+     * Page indexes to show (null = gap), always in a single row: first/last `edge` pages,
+     * `around` pages on each side of the current one, and "···" where pages are skipped.
+     * Fixed slot count (2·edge + 2·around + 3) so the nav width doesn't jump while paging.
+     */
+    function visiblePages(total: number, edge: number, around: number): (number | null)[] {
+      if (total <= 2 * edge + 2 * around + 3) return Array.from({ length: total }, (_, i) => i);
+      const start = Math.max(Math.min(current - around, total - edge - 2 * around - 2), edge + 1);
+      const end = Math.min(Math.max(current + around, edge + 2 * around + 1), total - edge - 2);
+      const range = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => from + i);
+      return [
+        ...range(0, edge - 1),
+        start > edge + 1 ? null : edge,
+        ...range(start, end),
+        end < total - edge - 2 ? null : total - edge - 1,
+        ...range(total - edge, total - 1),
+      ];
+    }
+
+    function renderPageButtons() {
+      const items = desktop.matches ? visiblePages(pageButtons.length, 2, 1) : visiblePages(pageButtons.length, 1, 0);
+      pagesBox!.replaceChildren(...items.map((i) => {
+        if (i !== null) return pageButtons[i];
+        const gap = document.createElement('span');
+        gap.className = 'self-end px-0.5 md:px-1 py-2 text-gray-600 select-none';
+        gap.setAttribute('aria-hidden', 'true');
+        gap.textContent = '···';
+        return gap;
+      }));
     }
 
     function syncUrl() {
@@ -343,6 +374,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
         if (i === current) btn.setAttribute('aria-current', 'page');
         else btn.removeAttribute('aria-current');
       });
+      renderPageButtons();
       if (prevBtn) prevBtn.disabled = current === 0;
       if (nextBtn) nextBtn.disabled = current >= slides.length - 1;
 
@@ -416,7 +448,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     }, { passive: true });
 
     // --- ADAPTIVE PAGE SIZE (desktop) ---
-    const desktop = window.matchMedia('(min-width: 768px)');
+    desktop.addEventListener('change', renderPageButtons);
     const MIN_PER_PAGE = 3;
 
     /** Measures the space around the slider once (nav forced visible so it is always reserved). */
