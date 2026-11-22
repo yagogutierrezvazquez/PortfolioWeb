@@ -17,10 +17,14 @@ import Stack from '../components/sections/Stack.astro';
 import Projects from '../components/sections/Projects.astro';
 import Writeups from '../components/sections/Writeups.astro';
 import Footer from '../components/sections/Footer.astro';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+// --- I18N SETUP ---
+const t = useTranslations(getLangFromUrl(Astro.url));
 ---
 
-<BaseLayout title="PortfolioWeb">
-  <main>
+<BaseLayout title={t('seo.home.title')} description={t('seo.home.description')}>
+  <div>
     <Hero />
     <Experience />
     <Certificates />
@@ -39,5 +43,5 @@ import Footer from '../components/sections/Footer.astro';
       </section>
     ))}  -->
 
-  </main>
+  </div>
 </BaseLayout>

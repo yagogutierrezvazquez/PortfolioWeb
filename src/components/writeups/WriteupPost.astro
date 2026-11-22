@@ -9,6 +9,7 @@ import { render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../i18n/utils';
 import { formatDate, getDifficultyColor } from '../../utils/writeups';
+import { SITE_URL, PERSON_ID, WEBSITE_ID } from '../../data/seo';
 
 // --- TYPES ---
 interface Props {
@@ -23,11 +24,34 @@ const translatePath = useTranslatedPath(lang);
 // --- DATA: RENDER CONTENT ---
 const { entry } = Astro.props;
 const { Content } = await render(entry);
+
+// --- SEO ---
+// Writeup content is English-only, so the EN URL is canonical for both locales
+// (avoids the /es copy competing as duplicate content).
+const canonicalPath = `/writeups/${entry.slug}/`;
+const articleSchema = {
+  '@type': 'TechArticle',
+  '@id': `${SITE_URL}${canonicalPath}#article`,
+  headline: entry.data.title,
+  description: entry.data.description,
+  datePublished: entry.data.date.toISOString(),
+  inLanguage: 'en',
+  keywords: entry.data.tags.join(', '),
+  url: `${SITE_URL}${canonicalPath}`,
+  mainEntityOfPage: `${SITE_URL}${canonicalPath}`,
+  author: { '@id': PERSON_ID },
+  publisher: { '@id': PERSON_ID },
+  isPartOf: { '@id': WEBSITE_ID },
+};
 ---
 
 <BaseLayout
-  title={`${entry.data.title} | Yago Gutiérrez`}
+  title={`${entry.data.title} — Writeup by Yago Gutiérrez`}
   description={entry.data.description}
+  type="article"
+  canonical={canonicalPath}
+  alternates={false}
+  schema={articleSchema}
 >
   <div class="min-h-screen bg-[#0a0a0a] pb-24">
 

@@ -1,72 +1,125 @@
 ---
 /**
  * @layout BaseLayout
- * @version 1.1
+ * @version 1.2
  * @description Main architectural shell for all pages.
- * Handles SEO (Meta, Hreflang, OpenGraph), global assets, and internationalization.
+ * Handles SEO (Meta, Hreflang, OpenGraph, JSON-LD), global assets, and internationalization.
  * Implements canonical URL logic and build versioning metadata.
  */
 import '../styles/global.css';
+import { getImage } from 'astro:assets';
 import Navbar from '../components/sections/Navbar.astro';
+import profileImg from '../assets/images/profile.png';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { SITE_URL, profile, buildSiteSchema } from '../data/seo';
 
 // --- TYPES ---
 interface Props {
   title: string;
   description?: string;
   version?: string;
+  /** "article" for writeups; "website" otherwise. */
+  type?: 'website' | 'article';
+  /** Overrides the canonical URL (e.g. ES writeups point to their EN original). */
+  canonical?: string;
+  /** Emit hreflang alternates. Disable for pages without a real translation. */
+  alternates?: boolean;
+  /** Ask search engines not to index this page (e.g. 404). */
+  noindex?: boolean;
+  /** Extra page-level JSON-LD node(s), merged with the site-wide Person/WebSite graph. */
+  schema?: Record<string, unknown>;
 }
 
 // --- CONFIGURATION & I18N ---
-// Current system version 1.1
-const { title, description, version = "1.1" } = Astro.props;
+// Current system version 1.2
+const {
+  title,
+  description,
+  version = "1.2",
+  type = 'website',
+  canonical,
+  alternates = true,
+  noindex = false,
+  schema
+} = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 // --- SEO LOGIC ---
-const siteUrl = Astro.site ?? 'https://yagog.dev';
-const canonicalURL = new URL(Astro.url.pathname, siteUrl);
+const siteUrl = Astro.site ?? SITE_URL;
+const canonicalURL = new URL(canonical ?? Astro.url.pathname, siteUrl);
+const fullTitle = `${title} | yagog.dev`;
+const metaDescription = description || t('seo.home.description');
 
-// Hreflang determination logic for international SEO
+// Hreflang: each page points to its counterpart; x-default is the English version
 const isDefault = lang === 'en';
-const alternateLang = isDefault ? 'es' : 'en';
-const alternatePath = isDefault ? `/es${Astro.url.pathname}` : Astro.url.pathname.replace(/^\/es/, '');
-const alternateURL = new URL(alternatePath, siteUrl);
+const enPath = isDefault ? Astro.url.pathname : (Astro.url.pathname.replace(/^\/es/, '') || '/');
+const esPath = isDefault ? `/es${Astro.url.pathname}` : Astro.url.pathname;
+const enURL = new URL(enPath, siteUrl);
+const esURL = new URL(esPath, siteUrl);
+
+// --- SOCIAL PREVIEW ---
+const ogImage = new URL('/og-image.png', siteUrl);
+const ogLocale = isDefault ? 'en_US' : 'es_ES';
+const ogLocaleAlternate = isDefault ? 'es_ES' : 'en_US';
+
+// --- STRUCTURED DATA (JSON-LD) ---
+const avatar = await getImage({ src: profileImg, width: 400, format: 'webp' });
+const siteSchema = buildSiteSchema(new URL(avatar.src, siteUrl).href);
+if (schema) siteSchema['@graph'].push(schema as any);
 ---
 
 <!doctype html>
-<html lang={lang} class="scroll-smooth"> 
+<html lang={lang} class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="version" content={version} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <!-- Google Search Console ownership verification -->
+    <meta name="google-site-verification" content="l41n1VE2dHDK_H8O8Q22h5kNxioNadeumTR_e8YfRSk" />
 
-    <title>{title} | yagog.dev</title>
-    <meta name="title" content={`${title} | yagog.dev`} />
-    <meta name="description" content={description || t('hero.description')} />
-    <link rel="canonical" href={canonicalURL} />
+    <title>{fullTitle}</title>
+    <meta name="title" content={fullTitle} />
+    <meta name="description" content={metaDescription} />
+    <meta name="author" content={profile.name} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    {!noindex && <link rel="canonical" href={canonicalURL} />}
 
-    <link rel="alternate" hreflang={lang} href={canonicalURL} />
-    <link rel="alternate" hreflang={alternateLang} href={alternateURL} />
-    <link rel="alternate" hreflang="x-default" href={new URL('/', siteUrl)} />
+    {alternates && (
+      <>
+        <link rel="alternate" hreflang="en" href={enURL} />
+        <link rel="alternate" hreflang="es" href={esURL} />
+        <link rel="alternate" hreflang="x-default" href={enURL} />
+      </>
+    )}
 
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description || t('hero.description')} />
-    <meta property="og:image" content={new URL('/og-image.png', siteUrl)} />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="yagog.dev" />
+    <meta property="og:locale" content={ogLocale} />
+    {alternates && <meta property="og:locale:alternate" content={ogLocaleAlternate} />}
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${profile.name} — ${profile.jobTitle}`} />
 
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={Astro.url} />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description || t('hero.description')} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={metaDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(siteSchema)} />
   </head>
-  
+
   <body class="bg-brand-bg overflow-x-hidden text-white antialiased selection:bg-green-500/30 selection:text-green-500 font-mono">
     <Navbar />
-    
+
     <main id="main-content">
       <slot />
     </main>

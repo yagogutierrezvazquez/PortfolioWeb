@@ -1,0 +1,36 @@
+---
+/**
+ * @page 404
+ * @description Custom "not found" page. Served by the host for unknown paths,
+ * so they return a real 404 instead of falling back to the home page.
+ * Marked noindex; bilingual since the requested language is unknown.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { ui } from '../i18n/ui';
+---
+
+<BaseLayout title={ui.en['notfound.title']} description={ui.en['notfound.desc']} alternates={false} noindex>
+  <div class="relative z-1 min-h-screen bg-[#0a0a0a] flex items-center justify-center px-6">
+    <div class="w-full max-w-xl border border-white/10 bg-black rounded-sm p-8 font-mono text-sm">
+      <p class="text-gray-500">$ cat <span id="requested-path" class="text-gray-300">/unknown</span></p>
+      <p class="mt-2 text-red-500/80">cat: No such file or directory (404)</p>
+
+      <h1 class="mt-8 text-3xl md:text-4xl font-bold text-white tracking-tighter">
+        404<span class="text-green-500">_</span>
+      </h1>
+      <p class="mt-3 text-gray-400">{ui.en['notfound.desc']}</p>
+      <p class="text-gray-600">{ui.es['notfound.desc']}</p>
+
+      <div class="mt-8 flex flex-wrap gap-6">
+        <a href="/" class="text-green-500 hover:underline">&gt; {ui.en['notfound.back']} [EN]</a>
+        <a href="/es/" class="text-green-500 hover:underline">&gt; {ui.es['notfound.back']} [ES]</a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  // Echo the requested path in the fake terminal output
+  const pathEl = document.getElementById('requested-path');
+  if (pathEl) pathEl.textContent = window.location.pathname;
+</script>

@@ -17,6 +17,11 @@ export default defineConfig({
   integrations: [
     sitemap({
       /**
+       * Exclude ES writeup posts: their content is English-only and their
+       * canonical points to the EN URL, so only the original is listed.
+       */
+      filter: (page) => !/\/es\/writeups\/[^/]+\/?$/.test(new URL(page).pathname),
+      /**
        * I18N configuration for sitemap
        * Ensures Google maps the relationship between root (EN) and /es (ES)
        */

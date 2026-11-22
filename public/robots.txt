@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yagog.dev/sitemap-index.xml

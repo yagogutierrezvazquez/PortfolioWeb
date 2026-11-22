@@ -38,6 +38,19 @@ export const ui = {
     'month.11': 'November',
     'month.12': 'December',
 
+    // SEO (titles & meta descriptions)
+    'seo.home.title': 'Yago Gutiérrez — Cybersecurity Specialist & Pentester',
+    'seo.home.description': 'Portfolio of Yago Gutiérrez, cybersecurity specialist and pentester based in Spain (eJPT, CompTIA Security+). Experience, certifications, projects and CTF writeups.',
+    'seo.certs.title': 'Certifications — Yago Gutiérrez',
+    'seo.certs.description': 'Verified cybersecurity certifications and badges earned by Yago Gutiérrez: eJPT, CompTIA Security+, Microsoft SC-900, Cisco and more.',
+    'seo.writeups.title': 'CTF & Lab Writeups — Yago Gutiérrez',
+    'seo.writeups.description': 'Archive of penetration testing, CTF and lab writeups by Yago Gutiérrez: enumeration, exploitation, privilege escalation and post-exploitation.',
+
+    // 404 Page
+    'notfound.title': '404 — Page not found',
+    'notfound.desc': 'The requested path does not exist on this host.',
+    'notfound.back': 'cd /home',
+
     // Navigation Labels
     'nav.home': 'Home',
     'nav.exp': 'Exp',
@@ -154,6 +167,19 @@ export const ui = {
     'month.10': 'Octubre',
     'month.11': 'Noviembre',
     'month.12': 'Diciembre',
+
+    // SEO (títulos y meta descripciones)
+    'seo.home.title': 'Yago Gutiérrez — Especialista en Ciberseguridad y Pentester',
+    'seo.home.description': 'Portfolio de Yago Gutiérrez, especialista en ciberseguridad y pentester en España (eJPT, CompTIA Security+). Experiencia, certificaciones, proyectos y writeups de CTF.',
+    'seo.certs.title': 'Certificaciones — Yago Gutiérrez',
+    'seo.certs.description': 'Certificaciones e insignias de ciberseguridad verificadas de Yago Gutiérrez: eJPT, CompTIA Security+, Microsoft SC-900, Cisco y más.',
+    'seo.writeups.title': 'Writeups de CTF y Laboratorios — Yago Gutiérrez',
+    'seo.writeups.description': 'Archivo de writeups de pentesting, CTF y laboratorios de Yago Gutiérrez: enumeración, explotación, escalada de privilegios y post-explotación.',
+
+    // Página 404
+    'notfound.title': '404 — Página no encontrada',
+    'notfound.desc': 'La ruta solicitada no existe en este host.',
+    'notfound.back': 'cd /home',
 
     // Etiquetas de Navegación
     'nav.home': 'Inicio',
